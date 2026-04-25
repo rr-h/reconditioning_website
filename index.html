@@ -1,0 +1,1278 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reconditioning Programme Tracker</title>
+  <style>
+    :root {
+      --bg: #f6f7f4;
+      --panel: #ffffff;
+      --panel-soft: #eef3ee;
+      --text: #162016;
+      --muted: #5b675c;
+      --line: #dfe5df;
+      --accent: #2f6f46;
+      --accent-soft: #dceadd;
+      --warn: #8a5a00;
+      --warn-bg: #fff4d7;
+      --danger: #8f2525;
+      --danger-bg: #ffe5e5;
+      --shadow: 0 12px 30px rgba(19, 36, 21, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1f4f34, #4f7f5c);
+      color: #ffffff;
+      padding: 28px 18px 30px;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: grid;
+      gap: 14px;
+    }
+
+    h1, h2, h3, h4 { margin: 0; }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      max-width: 850px;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 1rem;
+    }
+
+    main {
+      padding: 20px 18px 50px;
+    }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      margin-top: -24px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .soft-card {
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    input, textarea, select, button {
+      font: inherit;
+    }
+
+    input[type="date"], input[type="number"], textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: #ffffff;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 94px;
+      resize: vertical;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: var(--accent);
+      color: #ffffff;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    button.secondary {
+      background: #ffffff;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    button.ghost {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--line);
+    }
+
+    button.danger {
+      background: var(--danger);
+    }
+
+    button:focus, input:focus, textarea:focus, select:focus {
+      outline: 3px solid rgba(47, 111, 70, 0.28);
+      outline-offset: 2px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .phase-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .big-stat {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      font-weight: 900;
+    }
+
+    .muted { color: var(--muted); }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 18px;
+      margin-top: 18px;
+      align-items: start;
+    }
+
+    .stack { display: grid; gap: 14px; }
+
+    .task-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .task {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      align-items: start;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .task input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: var(--accent);
+    }
+
+    .task strong { display: block; }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: #f0f3f0;
+      color: var(--muted);
+      padding: 6px 10px;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.94rem;
+    }
+
+    th {
+      background: #f0f3f0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .progress-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .bar {
+      height: 10px;
+      background: #e5e9e5;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .bar > span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.2s ease;
+    }
+
+    .alert {
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: var(--warn-bg);
+      color: var(--warn);
+      margin-top: 12px;
+      font-weight: 700;
+    }
+
+    .danger-note {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #ffffff;
+      padding: 12px 14px;
+    }
+
+    details summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .history-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .history-item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: #ffffff;
+      font-size: 0.92rem;
+    }
+
+    .footer-note {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 900px) {
+      .top-grid, .section-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .form-grid, .progress-grid {
+        grid-template-columns: 1fr;
+      }
+      .card { padding: 15px; }
+      main { padding-left: 12px; padding-right: 12px; }
+      header { padding-left: 12px; padding-right: 12px; }
+      th, td { font-size: 0.86rem; padding: 8px; }
+    }
+
+    @media print {
+      header, .controls-card, .tracking-card, .history-card, .footer-note, button { display: none !important; }
+      main { padding: 0; }
+      .top-grid, .section-grid { display: block; margin: 0; }
+      .card { box-shadow: none; border: 1px solid #bbb; margin-bottom: 12px; }
+      body { background: #ffffff; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap hero">
+      <h1>Reconditioning Programme Tracker</h1>
+      <p class="subtitle">Enter the programme start date. The page shows the correct current phase and this week's work only, so the future can stop looming like an unpaid bill.</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="top-grid">
+        <div class="card controls-card">
+          <h2>Programme settings</h2>
+          <p class="muted">The tracker uses the start date to calculate programme week, phase and weekly targets. Data is saved in this browser only.</p>
+          <div class="form-grid" style="margin-top: 14px;">
+            <div>
+              <label for="startDate">Programme start date</label>
+              <input id="startDate" type="date">
+            </div>
+            <div>
+              <label for="viewDate">Date to view</label>
+              <input id="viewDate" type="date">
+            </div>
+          </div>
+          <div class="button-row" style="margin-top: 14px;">
+            <button id="saveSettings">Save dates</button>
+            <button id="todayButton" class="secondary">Show today</button>
+            <button id="printButton" class="ghost">Print this week</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div id="phaseBadge" class="phase-badge">Phase</div>
+          <div class="big-stat" id="weekNumber">Week 1</div>
+          <p class="muted" id="phaseSummary">Set a programme start date to begin.</p>
+          <div class="pill-row" id="targetPills"></div>
+        </div>
+      </section>
+
+      <section class="section-grid">
+        <div class="stack">
+          <div class="card">
+            <h2>This week's focus</h2>
+            <p id="weekFocus" class="muted"></p>
+            <div id="goalposts" class="task-list"></div>
+          </div>
+
+          <div class="card">
+            <h2>Today</h2>
+            <p class="muted" id="todayIntro"></p>
+            <div id="todayTasks" class="task-list"></div>
+          </div>
+
+          <div class="card">
+            <h2>Walking plan</h2>
+            <div id="walkingPlan"></div>
+          </div>
+
+          <div class="card">
+            <h2>Strength exercises for this phase</h2>
+            <p class="muted" id="strengthIntro"></p>
+            <div id="strengthTables"></div>
+          </div>
+
+          <div class="card">
+            <h2>Conditioning and mobility</h2>
+            <div id="conditioningPlan"></div>
+          </div>
+        </div>
+
+        <aside class="stack">
+          <div class="card tracking-card">
+            <h2>This week's tracker</h2>
+            <p class="muted">Record only this week. Future weeks are deliberately hidden because humans are excellent at turning plans into dread.</p>
+            <div class="progress-grid" style="margin-top: 12px;">
+              <div class="metric">
+                <label for="walkMinutes">Walking minutes this week</label>
+                <input id="walkMinutes" type="number" min="0" step="5">
+                <div class="bar"><span id="walkBar"></span></div>
+                <small id="walkTarget" class="muted"></small>
+              </div>
+              <div class="metric">
+                <label for="walkSessions">Walking sessions</label>
+                <input id="walkSessions" type="number" min="0" step="1">
+                <div class="bar"><span id="walkSessionBar"></span></div>
+                <small id="walkSessionTarget" class="muted"></small>
+              </div>
+              <div class="metric">
+                <label for="strengthSessions">Strength sessions</label>
+                <input id="strengthSessions" type="number" min="0" step="1">
+                <div class="bar"><span id="strengthBar"></span></div>
+                <small id="strengthTarget" class="muted"></small>
+              </div>
+              <div class="metric">
+                <label for="conditioningSessions">Conditioning sessions</label>
+                <input id="conditioningSessions" type="number" min="0" step="1">
+                <div class="bar"><span id="conditioningBar"></span></div>
+                <small id="conditioningTarget" class="muted"></small>
+              </div>
+              <div class="metric">
+                <label for="mobilityDays">Mobility days</label>
+                <input id="mobilityDays" type="number" min="0" step="1">
+                <div class="bar"><span id="mobilityBar"></span></div>
+                <small id="mobilityTarget" class="muted"></small>
+              </div>
+              <div class="metric">
+                <label for="avgPain">Average leg pain 0 to 10</label>
+                <input id="avgPain" type="number" min="0" max="10" step="0.5">
+                <small class="muted">Aim for manageable symptoms, not heroic limping.</small>
+              </div>
+              <div class="metric">
+                <label for="weight">Body weight kg</label>
+                <input id="weight" type="number" min="0" step="0.1">
+              </div>
+              <div class="metric">
+                <label for="waist">Waist cm</label>
+                <input id="waist" type="number" min="0" step="0.5">
+              </div>
+            </div>
+            <div style="margin-top: 12px;">
+              <label for="notes">Notes for this week</label>
+              <textarea id="notes" placeholder="Energy, pain triggers, wins, changes needed"></textarea>
+            </div>
+            <div class="button-row" style="margin-top: 12px;">
+              <button id="saveProgress">Save progress</button>
+              <button id="clearWeek" class="danger">Clear this week</button>
+            </div>
+            <div id="painAlert" class="alert hidden"></div>
+          </div>
+
+          <div class="card history-card">
+            <h2>Past progress</h2>
+            <p class="muted">Shows completed or saved weeks only. No future tasks are shown.</p>
+            <div class="button-row" style="margin-top: 10px;">
+              <button id="exportCsv" class="secondary">Export CSV</button>
+              <button id="resetAll" class="ghost">Reset all data</button>
+            </div>
+            <div id="history" class="history-list"></div>
+          </div>
+
+          <div class="card">
+            <h2>Pain rules</h2>
+            <table>
+              <thead><tr><th>Symptom</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>0 to 3 out of 10 discomfort</td><td>Continue.</td></tr>
+                <tr><td>4 to 5 out of 10 briefly</td><td>Slow down, shorten stride or take a rest.</td></tr>
+                <tr><td>6 or more out of 10</td><td>Stop that bout and reduce next session.</td></tr>
+                <tr><td>Pain changes gait</td><td>Stop, recover, then reduce load.</td></tr>
+                <tr><td>Worse the next day</td><td>Reduce next session by 20 to 30 percent.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </aside>
+      </section>
+
+      <p class="footer-note">Built as a simple local tracker. It does not send data anywhere. Apparently privacy is still allowed in small corners of civilisation.</p>
+    </div>
+  </main>
+
+<script>
+(function () {
+  "use strict";
+
+  const MS_PER_DAY = 24 * 60 * 60 * 1000;
+  const STORAGE_KEY = "reconditioningTracker.v1";
+
+  const defaultSettings = {
+    startDate: "",
+    viewDate: toInputDate(new Date()),
+    progress: {},
+    taskChecks: {}
+  };
+
+  const phaseData = [
+    {
+      id: 1,
+      name: "Phase 1",
+      weeks: [1, 4],
+      title: "Rebuild tolerance",
+      summary: "Daily walking intervals, conservative full-body strength, daily mobility and no dramatic nonsense.",
+      focus: "Re-establish repeatable daily movement. Keep effort moderate, reduce next-day flare-ups and build confidence through small wins.",
+      targetsByWeek: {
+        1: { walkMinutes: 90, walkSessions: 10, strength: 2, conditioning: 0, mobility: 5, walkingText: "Two walks per day, 8 to 12 minutes each, 5 to 6 days." },
+        2: { walkMinutes: 120, walkSessions: 10, strength: 2, conditioning: 0, mobility: 5, walkingText: "Two walks per day, 10 to 15 minutes each, 5 to 6 days." },
+        3: { walkMinutes: 150, walkSessions: 10, strength: 3, conditioning: 0, mobility: 6, walkingText: "Two walks per day, 12 to 18 minutes each, 5 to 6 days." },
+        4: { walkMinutes: 175, walkSessions: 8, strength: 3, conditioning: 0, mobility: 6, walkingText: "One to two walks per day, 20 to 35 minutes total daily time." }
+      },
+      goalposts: [
+        "Finish the week without a major pain flare-up.",
+        "Accumulate walking minutes rather than chasing one long walk.",
+        "Complete strength work with 3 to 4 reps in reserve.",
+        "Do 10 minutes of mobility on most days."
+      ],
+      walkingDetails: [
+        ["Frequency", "5 to 6 days per week"],
+        ["Method", "Walk until leg discomfort reaches 3 to 4 out of 10, rest 1 to 3 minutes, then repeat."],
+        ["Intensity", "RPE 3 to 5. Able to speak in short sentences."],
+        ["Progression", "Add 2 to 5 minutes per day only if next-day symptoms are stable."],
+        ["Avoid", "Incline, speed work, impact and forced continuous walking." ]
+      ],
+      strengthIntro: "Alternate Session A and B. Start with two sessions weekly, then move to three if soreness is acceptable.",
+      strength: {
+        "Session A": [
+          ["Bench box squat or sit-to-stand", "2 to 3", "8 to 10", "RPE 5 to 6"],
+          ["Barbell Romanian deadlift", "2 to 3", "8 to 10", "RPE 5 to 6"],
+          ["Barbell bench press or floor press", "2 to 3", "8 to 10", "RPE 5 to 6"],
+          ["Barbell row", "2 to 3", "8 to 12", "RPE 5 to 6"],
+          ["Standing calf raise", "2", "10 to 15", "Slow and controlled"],
+          ["Dead bug", "2", "6 to 10 each side", "Controlled breathing"]
+        ],
+        "Session B": [
+          ["Low step-up or supported split squat", "2", "6 to 8 each side", "RPE 5"],
+          ["Glute bridge or barbell hip thrust", "2 to 3", "10 to 12", "RPE 5 to 6"],
+          ["Overhead press", "2", "6 to 10", "RPE 5"],
+          ["Barbell row", "2 to 3", "8 to 12", "RPE 5 to 6"],
+          ["Loaded hold", "2", "20 to 40 seconds", "Brace and breathe"],
+          ["Side plank from knees", "2", "15 to 30 seconds", "Controlled"]
+        ]
+      },
+      conditioning: "No formal conditioning yet. Use gentle mobility, breathing and short easy walks. Boxing waits until the calves stop behaving like offended committee members.",
+      mobility: ["Cat-cow", "Hip flexor stretch", "Calf mobility against wall", "Hamstring flossing", "Thoracic rotations", "Supported deep squat to box", "Slow nasal breathing"]
+    },
+    {
+      id: 2,
+      name: "Phase 2",
+      weeks: [5, 8],
+      title: "Build the engine",
+      summary: "Longer walks, consistent strength and first low-impact conditioning.",
+      focus: "Move towards consistent moderate activity. Improve leg endurance and keep strength training technically clean.",
+      targetsByWeek: {
+        5: { walkMinutes: 175, walkSessions: 5, strength: 3, conditioning: 1, mobility: 5, walkingText: "Five walks, around 25 to 30 minutes each, broken if needed." },
+        6: { walkMinutes: 190, walkSessions: 5, strength: 3, conditioning: 1, mobility: 5, walkingText: "Five walks, around 30 to 35 minutes each, broken if needed." },
+        7: { walkMinutes: 210, walkSessions: 5, strength: 3, conditioning: 1, mobility: 5, walkingText: "Five to six walks, 35 minutes each, broken if needed." },
+        8: { walkMinutes: 220, walkSessions: 6, strength: 3, conditioning: 1, mobility: 5, walkingText: "Five to six walks, 35 to 40 minutes each, broken if needed." }
+      },
+      goalposts: [
+        "Reach 150 minutes or more of weekly walking.",
+        "Complete three strength sessions with stable next-day symptoms.",
+        "Add one low-impact conditioning session.",
+        "Use rests before pain changes gait."
+      ],
+      walkingDetails: [
+        ["Easy walks", "20 to 40 minutes, RPE 3 to 4, pain under 3 out of 10."],
+        ["Capacity intervals", "5 minute warm-up, 3 to 5 minutes brisk, 1 to 2 minutes easy, repeat for 20 to 30 minutes, cool down."],
+        ["Longer walk", "40 to 60 minutes total, breaks allowed."],
+        ["Progression", "Increase time before speed. Add incline only if symptoms stay calm."],
+        ["Avoid", "Running, jumping, skipping and aggressive pivots." ]
+      ],
+      strengthIntro: "Use three full-body sessions. Most work should feel like RPE 6 to 7 with 2 to 3 reps in reserve.",
+      strength: {
+        "Session A": [
+          ["Box squat", "3", "8 to 10", "RPE 6"],
+          ["Bench press or floor press", "3", "8 to 10", "RPE 6"],
+          ["Barbell row", "3", "8 to 12", "RPE 6"],
+          ["Romanian deadlift", "3", "8 to 10", "RPE 6"],
+          ["Standing calf raise", "3", "10 to 15", "Slow"],
+          ["Dead bug", "2 to 3", "8 to 10 each side", "Controlled"]
+        ],
+        "Session B": [
+          ["Romanian deadlift", "3", "8 to 10", "RPE 6"],
+          ["Overhead press", "3", "6 to 10", "RPE 6"],
+          ["Step-up", "3", "8 to 10 each side", "Low step"],
+          ["Barbell row", "3", "8 to 12", "RPE 6"],
+          ["Hip thrust", "3", "10 to 12", "RPE 6"],
+          ["Side plank", "2 to 3", "20 to 40 seconds", "Each side"]
+        ]
+      },
+      conditioning: "Once weekly. Do 6 rounds of 60 seconds shadow boxing or low-impact aerobics, with 90 seconds rest. Keep RPE 5 to 6.",
+      mobility: ["Calf wall stretch", "Hip flexor stretch", "90-90 hip switches", "Thoracic rotations", "Hamstring flossing", "Ankle rocks", "Breathing reset"]
+    },
+    {
+      id: 3,
+      name: "Phase 3",
+      weeks: [9, 16],
+      title: "Fat-loss conditioning",
+      summary: "Higher weekly aerobic volume, three strength sessions and controlled conditioning.",
+      focus: "Build towards 240 to 300 minutes of weekly aerobic work while protecting strength and recovery.",
+      targetsByWeek: {
+        9: { walkMinutes: 240, walkSessions: 5, strength: 3, conditioning: 1, mobility: 5, walkingText: "Five walking sessions, 35 to 45 minutes each." },
+        10: { walkMinutes: 250, walkSessions: 5, strength: 3, conditioning: 1, mobility: 5, walkingText: "Five walking sessions, 40 to 45 minutes each." },
+        11: { walkMinutes: 260, walkSessions: 5, strength: 3, conditioning: 1, mobility: 5, walkingText: "Five walking sessions, 45 minutes each, plus short add-ons after lifting." },
+        12: { walkMinutes: 270, walkSessions: 5, strength: 3, conditioning: 1, mobility: 5, walkingText: "Five to six walking sessions, include one brisk interval walk." },
+        13: { walkMinutes: 280, walkSessions: 6, strength: 3, conditioning: 2, mobility: 5, walkingText: "Six walking sessions, add small incline blocks if tolerated." },
+        14: { walkMinutes: 290, walkSessions: 6, strength: 3, conditioning: 2, mobility: 5, walkingText: "Six walking sessions, mixed easy and brisk pace." },
+        15: { walkMinutes: 300, walkSessions: 6, strength: 3, conditioning: 2, mobility: 5, walkingText: "Six walking sessions, one long walk and one interval walk." },
+        16: { walkMinutes: 300, walkSessions: 6, strength: 3, conditioning: 2, mobility: 5, walkingText: "Six walking sessions, aim for one 60 minute walk with breaks allowed." }
+      },
+      goalposts: [
+        "Reach 240 to 300 minutes of weekly aerobic work.",
+        "Keep three strength sessions in place.",
+        "Use boxing or low-impact circuits once or twice weekly.",
+        "Avoid all-or-nothing days. A short walk still counts."
+      ],
+      walkingDetails: [
+        ["Brisk intervals", "5 minute warm-up, 3 minutes brisk, 2 minutes easy, repeat 6 to 8 times, cool down."],
+        ["Easy walks", "30 to 50 minutes, RPE 3 to 4."],
+        ["Long walk", "45 to 75 minutes, breaks allowed."],
+        ["Incline", "Only small blocks of 1 to 3 minutes, no steep treadmill heroics."],
+        ["Progression", "Only one variable per week: duration, speed, frequency or incline." ]
+      ],
+      strengthIntro: "Three full-body sessions. Keep most lifts at RPE 6 to 7. Add load only when form and recovery are stable.",
+      strength: {
+        "Session A": [
+          ["Box squat or squat to bench", "3 to 4", "6 to 10", "RPE 6 to 7"],
+          ["Bench press", "3 to 4", "6 to 10", "RPE 6 to 7"],
+          ["Barbell row", "3 to 4", "8 to 12", "RPE 6 to 7"],
+          ["Romanian deadlift", "2 to 3", "8 to 10", "RPE 6"],
+          ["Calf raise", "3", "10 to 20", "Slow"],
+          ["Dead bug", "3", "8 to 12 each side", "Controlled"]
+        ],
+        "Session B": [
+          ["Romanian deadlift", "3 to 4", "6 to 10", "RPE 6 to 7"],
+          ["Overhead press", "3", "6 to 10", "RPE 6"],
+          ["Step-up", "3", "8 to 12 each side", "Controlled"],
+          ["Barbell row", "3", "8 to 12", "RPE 6 to 7"],
+          ["Hip thrust", "3", "8 to 12", "RPE 6 to 7"],
+          ["Side plank", "3", "20 to 45 seconds", "Each side"]
+        ],
+        "Session C": [
+          ["Box squat", "3", "8 to 12", "RPE 6"],
+          ["Floor press or bench press", "3", "8 to 12", "RPE 6"],
+          ["Supported split squat", "2 to 3", "6 to 10 each side", "Controlled"],
+          ["Barbell row", "3", "8 to 12", "RPE 6 to 7"],
+          ["Calf raise, slow eccentric", "3", "12 to 20", "3 second lower"],
+          ["Loaded hold", "3", "30 to 60 seconds", "Brace"]
+        ]
+      },
+      conditioning: "One or two sessions weekly. Use 3 to 5 rounds: 60 seconds shadow boxing, 45 seconds low step-up or march, 8 to 12 incline press-ups, 10 light hinges, 6 dead bugs each side, then 90 seconds rest. RPE 6 to 7.",
+      mobility: ["Calf mobility", "Hip flexor stretch", "Glute bridge hold", "Thoracic rotations", "Downward dog variation", "Supported squat hold", "Breathing reset"]
+    },
+    {
+      id: 4,
+      name: "Phase 4",
+      weeks: [17, 52],
+      title: "Return to robust health",
+      summary: "Sustain fat loss, restore strength and build normal recreational fitness.",
+      focus: "Maintain 300 minutes or more of weekly aerobic work, lift three times weekly and make activity boringly normal.",
+      targetsByWeek: {},
+      defaultTargets: { walkMinutes: 300, walkSessions: 6, strength: 3, conditioning: 2, mobility: 5, walkingText: "Six aerobic sessions, including one longer walk and one brisk interval session." },
+      goalposts: [
+        "Maintain 300 to 420 minutes of weekly aerobic work.",
+        "Strength train three times weekly.",
+        "Use conditioning once or twice weekly as optional variety.",
+        "Keep progressing, but deload every 4 to 6 weeks."
+      ],
+      walkingDetails: [
+        ["Easy aerobic", "30 to 60 minutes, RPE 3 to 4."],
+        ["Brisk intervals", "5 minute warm-up, 4 minutes brisk, 2 minutes easy, repeat 5 to 8 times, cool down."],
+        ["Long walk", "60 to 90 minutes, breaks allowed if useful."],
+        ["Incline", "Use gradually. Add only if calf and thigh symptoms stay stable."],
+        ["Progression", "Increase weekly volume by no more than about 10 percent when recovery is good." ]
+      ],
+      strengthIntro: "Three full-body sessions. Progress load slowly. Deload by cutting sets in half every 4 to 6 weeks.",
+      strength: {
+        "Session A": [
+          ["Box squat or squat to bench", "3 to 4", "6 to 10", "RPE 7"],
+          ["Bench press", "3 to 4", "6 to 10", "RPE 7"],
+          ["Barbell row", "3 to 4", "8 to 12", "RPE 7"],
+          ["Romanian deadlift", "2 to 3", "8 to 10", "RPE 6 to 7"],
+          ["Calf raise", "3", "10 to 20", "Slow"],
+          ["Dead bug", "3", "8 to 12 each side", "Controlled"]
+        ],
+        "Session B": [
+          ["Romanian deadlift", "3 to 4", "6 to 10", "RPE 7"],
+          ["Overhead press", "3", "6 to 10", "RPE 7"],
+          ["Step-up", "3", "8 to 12 each side", "Controlled"],
+          ["Barbell row", "3", "8 to 12", "RPE 7"],
+          ["Hip thrust", "3", "8 to 12", "RPE 7"],
+          ["Side plank", "3", "30 to 60 seconds", "Each side"]
+        ],
+        "Session C": [
+          ["Box squat or front-loaded variation", "3", "8 to 12", "RPE 6 to 7"],
+          ["Floor press or bench press", "3", "8 to 12", "RPE 6 to 7"],
+          ["Supported split squat or reverse lunge", "2 to 3", "6 to 10 each side", "Controlled"],
+          ["Barbell row", "3", "8 to 12", "RPE 7"],
+          ["Calf raise, slow eccentric", "3", "12 to 20", "3 second lower"],
+          ["Loaded hold", "3", "30 to 60 seconds", "Brace"]
+        ]
+      },
+      conditioning: "One or two sessions weekly. Boxing, low-impact aerobics or circuits. Keep most sessions RPE 6 to 7. Save hard intervals for when walking and strength are stable.",
+      mobility: ["Calf mobility", "Hip flexor stretch", "90-90 hip switches", "Thoracic rotations", "Supported squat hold", "Hamstring flossing", "Breathing reset"]
+    }
+  ];
+
+  const weeklyTemplates = {
+    1: {
+      Mon: ["Strength A", "Short easy walk", "10 minute mobility"],
+      Tue: ["Walking intervals", "10 minute mobility"],
+      Wed: ["Strength B", "Short easy walk"],
+      Thu: ["Walking intervals", "10 minute mobility"],
+      Fri: ["Strength A or rest if sore", "Short easy walk"],
+      Sat: ["Longer easy broken walk", "Mobility"],
+      Sun: ["Recovery walk", "Yoga or flow"]
+    },
+    2: {
+      Mon: ["Strength A", "10 minute easy walk"],
+      Tue: ["Capacity interval walk"],
+      Wed: ["Strength B", "Mobility"],
+      Thu: ["Easy walk", "Mobility"],
+      Fri: ["Strength A or B", "10 minute walk"],
+      Sat: ["Longer broken walk"],
+      Sun: ["Low-impact conditioning", "Mobility"]
+    },
+    3: {
+      Mon: ["Strength A", "10 to 15 minute easy walk"],
+      Tue: ["Brisk walking intervals"],
+      Wed: ["Mobility or yoga", "Easy walk"],
+      Thu: ["Strength B", "10 to 15 minute easy walk"],
+      Fri: ["Boxing or low-impact conditioning"],
+      Sat: ["Long walk"],
+      Sun: ["Strength C or recovery walk"]
+    },
+    4: {
+      Mon: ["Strength A"],
+      Tue: ["Brisk walking intervals"],
+      Wed: ["Zone 2 walk", "Mobility"],
+      Thu: ["Strength B"],
+      Fri: ["Boxing or aerobic conditioning"],
+      Sat: ["Long walk or hike"],
+      Sun: ["Strength C or active recovery"]
+    }
+  };
+
+  const els = {
+    startDate: document.getElementById("startDate"),
+    viewDate: document.getElementById("viewDate"),
+    saveSettings: document.getElementById("saveSettings"),
+    todayButton: document.getElementById("todayButton"),
+    printButton: document.getElementById("printButton"),
+    phaseBadge: document.getElementById("phaseBadge"),
+    weekNumber: document.getElementById("weekNumber"),
+    phaseSummary: document.getElementById("phaseSummary"),
+    targetPills: document.getElementById("targetPills"),
+    weekFocus: document.getElementById("weekFocus"),
+    goalposts: document.getElementById("goalposts"),
+    todayIntro: document.getElementById("todayIntro"),
+    todayTasks: document.getElementById("todayTasks"),
+    walkingPlan: document.getElementById("walkingPlan"),
+    strengthIntro: document.getElementById("strengthIntro"),
+    strengthTables: document.getElementById("strengthTables"),
+    conditioningPlan: document.getElementById("conditioningPlan"),
+    walkMinutes: document.getElementById("walkMinutes"),
+    walkSessions: document.getElementById("walkSessions"),
+    strengthSessions: document.getElementById("strengthSessions"),
+    conditioningSessions: document.getElementById("conditioningSessions"),
+    mobilityDays: document.getElementById("mobilityDays"),
+    avgPain: document.getElementById("avgPain"),
+    weight: document.getElementById("weight"),
+    waist: document.getElementById("waist"),
+    notes: document.getElementById("notes"),
+    walkBar: document.getElementById("walkBar"),
+    walkSessionBar: document.getElementById("walkSessionBar"),
+    strengthBar: document.getElementById("strengthBar"),
+    conditioningBar: document.getElementById("conditioningBar"),
+    mobilityBar: document.getElementById("mobilityBar"),
+    walkTarget: document.getElementById("walkTarget"),
+    walkSessionTarget: document.getElementById("walkSessionTarget"),
+    strengthTarget: document.getElementById("strengthTarget"),
+    conditioningTarget: document.getElementById("conditioningTarget"),
+    mobilityTarget: document.getElementById("mobilityTarget"),
+    saveProgress: document.getElementById("saveProgress"),
+    clearWeek: document.getElementById("clearWeek"),
+    painAlert: document.getElementById("painAlert"),
+    exportCsv: document.getElementById("exportCsv"),
+    resetAll: document.getElementById("resetAll"),
+    history: document.getElementById("history")
+  };
+
+  let state = loadState();
+  let currentContext = null;
+
+  init();
+
+  function init() {
+    els.startDate.value = state.startDate || "";
+    els.viewDate.value = state.viewDate || toInputDate(new Date());
+
+    els.saveSettings.addEventListener("click", function () {
+      state.startDate = els.startDate.value;
+      state.viewDate = els.viewDate.value || toInputDate(new Date());
+      saveState();
+      render();
+    });
+
+    els.todayButton.addEventListener("click", function () {
+      els.viewDate.value = toInputDate(new Date());
+      state.viewDate = els.viewDate.value;
+      saveState();
+      render();
+    });
+
+    els.printButton.addEventListener("click", function () {
+      window.print();
+    });
+
+    [els.startDate, els.viewDate].forEach(function (el) {
+      el.addEventListener("change", function () {
+        state.startDate = els.startDate.value;
+        state.viewDate = els.viewDate.value || toInputDate(new Date());
+        saveState();
+        render();
+      });
+    });
+
+    [els.walkMinutes, els.walkSessions, els.strengthSessions, els.conditioningSessions, els.mobilityDays, els.avgPain, els.weight, els.waist, els.notes].forEach(function (el) {
+      el.addEventListener("input", debounce(function () {
+        saveCurrentProgress();
+        updateBars();
+        renderHistory();
+      }, 250));
+    });
+
+    els.saveProgress.addEventListener("click", function () {
+      saveCurrentProgress();
+      updateBars();
+      renderHistory();
+    });
+
+    els.clearWeek.addEventListener("click", function () {
+      if (!currentContext) return;
+      const key = weekKey(currentContext.weekNumber);
+      delete state.progress[key];
+      delete state.taskChecks[key];
+      saveState();
+      loadProgressIntoFields();
+      renderTodayTasks();
+      updateBars();
+      renderHistory();
+    });
+
+    els.exportCsv.addEventListener("click", exportCsv);
+
+    els.resetAll.addEventListener("click", function () {
+      const ok = window.confirm("Reset all saved progress and dates for this tracker?");
+      if (!ok) return;
+      state = JSON.parse(JSON.stringify(defaultSettings));
+      state.viewDate = toInputDate(new Date());
+      saveState();
+      els.startDate.value = "";
+      els.viewDate.value = state.viewDate;
+      render();
+    });
+
+    render();
+  }
+
+  function render() {
+    if (!state.startDate) {
+      renderEmpty();
+      return;
+    }
+
+    const start = parseLocalDate(state.startDate);
+    const view = parseLocalDate(state.viewDate || toInputDate(new Date()));
+    const dayDelta = Math.floor((view - start) / MS_PER_DAY);
+    const weekNumber = Math.max(1, Math.floor(dayDelta / 7) + 1);
+    const phase = getPhase(weekNumber);
+    const targets = getTargets(phase, weekNumber);
+    const dow = dayShort(view);
+
+    currentContext = { start, view, weekNumber, phase, targets, dow };
+
+    els.phaseBadge.textContent = phase.name + " - " + phase.title;
+    els.weekNumber.textContent = dayDelta < 0 ? "Not started" : "Week " + weekNumber;
+    els.phaseSummary.textContent = dayDelta < 0 ? "The selected view date is before the start date." : phase.summary;
+
+    renderTargetPills(targets);
+    els.weekFocus.textContent = phase.focus;
+    renderGoalposts(phase, targets);
+    renderTodayTasks();
+    renderWalkingPlan(phase, targets);
+    renderStrength(phase);
+    renderConditioning(phase);
+    loadProgressIntoFields();
+    updateBars();
+    renderHistory();
+  }
+
+  function renderEmpty() {
+    currentContext = null;
+    els.phaseBadge.textContent = "Set start date";
+    els.weekNumber.textContent = "Ready";
+    els.phaseSummary.textContent = "Choose the first day of the programme to calculate the current week.";
+    els.targetPills.innerHTML = "";
+    els.weekFocus.textContent = "No phase selected yet.";
+    els.goalposts.innerHTML = "";
+    els.todayIntro.textContent = "Enter a start date to show today's work.";
+    els.todayTasks.innerHTML = "";
+    els.walkingPlan.innerHTML = "";
+    els.strengthIntro.textContent = "";
+    els.strengthTables.innerHTML = "";
+    els.conditioningPlan.innerHTML = "";
+    clearProgressFields();
+    updateBars();
+    renderHistory();
+  }
+
+  function renderTargetPills(targets) {
+    els.targetPills.innerHTML = "";
+    const items = [
+      "Walk " + targets.walkMinutes + " min/week",
+      targets.walkSessions + " walk sessions",
+      targets.strength + " strength sessions",
+      targets.conditioning + " conditioning sessions",
+      targets.mobility + " mobility days"
+    ];
+    items.forEach(function (text) {
+      const span = document.createElement("span");
+      span.className = "pill";
+      span.textContent = text;
+      els.targetPills.appendChild(span);
+    });
+  }
+
+  function renderGoalposts(phase, targets) {
+    els.goalposts.innerHTML = "";
+    const merged = [targets.walkingText].concat(phase.goalposts);
+    merged.forEach(function (text, index) {
+      const div = document.createElement("div");
+      div.className = "task";
+      div.innerHTML = "<span aria-hidden='true'>" + (index + 1) + "</span><div><strong>Goalpost " + (index + 1) + "</strong><span>" + escapeHtml(text) + "</span></div>";
+      els.goalposts.appendChild(div);
+    });
+  }
+
+  function renderTodayTasks() {
+    if (!currentContext) return;
+    const phase = currentContext.phase;
+    const targets = currentContext.targets;
+    const template = weeklyTemplates[phase.id] || weeklyTemplates[4];
+    const dayTasks = template[currentContext.dow] || [];
+    const key = weekKey(currentContext.weekNumber);
+    const checks = state.taskChecks[key] || {};
+
+    els.todayIntro.textContent = currentContext.dow + ". Week target: " + targets.walkingText;
+    els.todayTasks.innerHTML = "";
+
+    dayTasks.forEach(function (task, index) {
+      const taskId = currentContext.dow + "-" + index;
+      const div = document.createElement("label");
+      div.className = "task";
+      div.innerHTML = "<input type='checkbox' " + (checks[taskId] ? "checked" : "") + " aria-label='Mark task complete'><div><strong>" + escapeHtml(task) + "</strong><span>Mark complete when done.</span></div>";
+      const checkbox = div.querySelector("input");
+      checkbox.addEventListener("change", function () {
+        if (!state.taskChecks[key]) state.taskChecks[key] = {};
+        state.taskChecks[key][taskId] = checkbox.checked;
+        saveState();
+      });
+      els.todayTasks.appendChild(div);
+    });
+  }
+
+  function renderWalkingPlan(phase, targets) {
+    let html = "<p><strong>This week:</strong> " + escapeHtml(targets.walkingText) + "</p>";
+    html += "<table><thead><tr><th>Item</th><th>Prescription</th></tr></thead><tbody>";
+    phase.walkingDetails.forEach(function (row) {
+      html += "<tr><td>" + escapeHtml(row[0]) + "</td><td>" + escapeHtml(row[1]) + "</td></tr>";
+    });
+    html += "</tbody></table>";
+    els.walkingPlan.innerHTML = html;
+  }
+
+  function renderStrength(phase) {
+    els.strengthIntro.textContent = phase.strengthIntro;
+    els.strengthTables.innerHTML = "";
+
+    Object.keys(phase.strength).forEach(function (sessionName) {
+      const details = document.createElement("details");
+      details.open = true;
+      let html = "<summary>" + escapeHtml(sessionName) + "</summary>";
+      html += "<table><thead><tr><th>Exercise</th><th>Sets</th><th>Reps or time</th><th>Effort</th></tr></thead><tbody>";
+      phase.strength[sessionName].forEach(function (row) {
+        html += "<tr><td>" + escapeHtml(row[0]) + "</td><td>" + escapeHtml(row[1]) + "</td><td>" + escapeHtml(row[2]) + "</td><td>" + escapeHtml(row[3]) + "</td></tr>";
+      });
+      html += "</tbody></table>";
+      details.innerHTML = html;
+      els.strengthTables.appendChild(details);
+    });
+  }
+
+  function renderConditioning(phase) {
+    let html = "<p><strong>Conditioning:</strong> " + escapeHtml(phase.conditioning) + "</p>";
+    html += "<p><strong>Mobility menu:</strong></p><div class='pill-row'>";
+    phase.mobility.forEach(function (item) {
+      html += "<span class='pill'>" + escapeHtml(item) + "</span>";
+    });
+    html += "</div>";
+    els.conditioningPlan.innerHTML = html;
+  }
+
+  function loadProgressIntoFields() {
+    if (!currentContext) {
+      clearProgressFields();
+      return;
+    }
+    const p = state.progress[weekKey(currentContext.weekNumber)] || {};
+    els.walkMinutes.value = p.walkMinutes || "";
+    els.walkSessions.value = p.walkSessions || "";
+    els.strengthSessions.value = p.strengthSessions || "";
+    els.conditioningSessions.value = p.conditioningSessions || "";
+    els.mobilityDays.value = p.mobilityDays || "";
+    els.avgPain.value = p.avgPain || "";
+    els.weight.value = p.weight || "";
+    els.waist.value = p.waist || "";
+    els.notes.value = p.notes || "";
+  }
+
+  function clearProgressFields() {
+    [els.walkMinutes, els.walkSessions, els.strengthSessions, els.conditioningSessions, els.mobilityDays, els.avgPain, els.weight, els.waist, els.notes].forEach(function (el) {
+      el.value = "";
+    });
+  }
+
+  function saveCurrentProgress() {
+    if (!currentContext) return;
+    const key = weekKey(currentContext.weekNumber);
+    state.progress[key] = {
+      weekNumber: currentContext.weekNumber,
+      phase: currentContext.phase.name,
+      walkMinutes: valueOrEmpty(els.walkMinutes.value),
+      walkSessions: valueOrEmpty(els.walkSessions.value),
+      strengthSessions: valueOrEmpty(els.strengthSessions.value),
+      conditioningSessions: valueOrEmpty(els.conditioningSessions.value),
+      mobilityDays: valueOrEmpty(els.mobilityDays.value),
+      avgPain: valueOrEmpty(els.avgPain.value),
+      weight: valueOrEmpty(els.weight.value),
+      waist: valueOrEmpty(els.waist.value),
+      notes: els.notes.value.trim(),
+      savedAt: new Date().toISOString()
+    };
+    saveState();
+  }
+
+  function updateBars() {
+    if (!currentContext) {
+      setBar(els.walkBar, 0);
+      setBar(els.walkSessionBar, 0);
+      setBar(els.strengthBar, 0);
+      setBar(els.conditioningBar, 0);
+      setBar(els.mobilityBar, 0);
+      els.painAlert.classList.add("hidden");
+      return;
+    }
+
+    const t = currentContext.targets;
+    setBar(els.walkBar, percent(num(els.walkMinutes.value), t.walkMinutes));
+    setBar(els.walkSessionBar, percent(num(els.walkSessions.value), t.walkSessions));
+    setBar(els.strengthBar, percent(num(els.strengthSessions.value), t.strength));
+    setBar(els.conditioningBar, percent(num(els.conditioningSessions.value), Math.max(1, t.conditioning)));
+    setBar(els.mobilityBar, percent(num(els.mobilityDays.value), t.mobility));
+
+    els.walkTarget.textContent = "Target: " + t.walkMinutes + " minutes";
+    els.walkSessionTarget.textContent = "Target: " + t.walkSessions + " sessions";
+    els.strengthTarget.textContent = "Target: " + t.strength + " sessions";
+    els.conditioningTarget.textContent = "Target: " + t.conditioning + " sessions";
+    els.mobilityTarget.textContent = "Target: " + t.mobility + " days";
+
+    const pain = num(els.avgPain.value);
+    if (pain >= 6) {
+      els.painAlert.textContent = "Average pain is high. Reduce walking intensity or volume next session and prioritise recovery.";
+      els.painAlert.classList.remove("hidden");
+      els.painAlert.classList.add("danger-note");
+    } else if (pain >= 4) {
+      els.painAlert.textContent = "Pain is moderate. Keep intervals, slow down before gait changes and avoid adding new load this week.";
+      els.painAlert.classList.remove("hidden");
+      els.painAlert.classList.remove("danger-note");
+    } else {
+      els.painAlert.classList.add("hidden");
+    }
+  }
+
+  function renderHistory() {
+    els.history.innerHTML = "";
+    const entries = Object.keys(state.progress || {})
+      .map(function (key) { return state.progress[key]; })
+      .filter(Boolean)
+      .sort(function (a, b) { return a.weekNumber - b.weekNumber; });
+
+    if (!entries.length) {
+      els.history.innerHTML = "<p class='muted'>No saved weeks yet.</p>";
+      return;
+    }
+
+    entries.forEach(function (p) {
+      const div = document.createElement("div");
+      div.className = "history-item";
+      div.innerHTML = "<strong>Week " + p.weekNumber + " - " + escapeHtml(p.phase || "") + "</strong><br>" +
+        "Walking: " + show(p.walkMinutes) + " min, strength: " + show(p.strengthSessions) + ", conditioning: " + show(p.conditioningSessions) + ", mobility: " + show(p.mobilityDays) + " days<br>" +
+        "Weight: " + show(p.weight) + " kg, waist: " + show(p.waist) + " cm, pain: " + show(p.avgPain) + "/10";
+      els.history.appendChild(div);
+    });
+  }
+
+  function exportCsv() {
+    const entries = Object.keys(state.progress || {})
+      .map(function (key) { return state.progress[key]; })
+      .filter(Boolean)
+      .sort(function (a, b) { return a.weekNumber - b.weekNumber; });
+
+    const headers = ["week", "phase", "walking_minutes", "walking_sessions", "strength_sessions", "conditioning_sessions", "mobility_days", "average_pain", "weight_kg", "waist_cm", "notes", "saved_at"];
+    const rows = entries.map(function (p) {
+      return [p.weekNumber, p.phase, p.walkMinutes, p.walkSessions, p.strengthSessions, p.conditioningSessions, p.mobilityDays, p.avgPain, p.weight, p.waist, p.notes, p.savedAt]
+        .map(csvCell).join(",");
+    });
+    const csv = headers.join(",") + "\n" + rows.join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "reconditioning-progress.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  function getPhase(weekNumber) {
+    const phase = phaseData.find(function (p) {
+      return weekNumber >= p.weeks[0] && weekNumber <= p.weeks[1];
+    });
+    return phase || phaseData[phaseData.length - 1];
+  }
+
+  function getTargets(phase, weekNumber) {
+    return phase.targetsByWeek[weekNumber] || phase.defaultTargets || phase.targetsByWeek[phase.weeks[1]];
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return JSON.parse(JSON.stringify(defaultSettings));
+      const parsed = JSON.parse(raw);
+      return Object.assign(JSON.parse(JSON.stringify(defaultSettings)), parsed);
+    } catch (e) {
+      return JSON.parse(JSON.stringify(defaultSettings));
+    }
+  }
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function weekKey(weekNumber) {
+    return "week-" + weekNumber;
+  }
+
+  function toInputDate(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return y + "-" + m + "-" + d;
+  }
+
+  function parseLocalDate(value) {
+    const parts = value.split("-").map(Number);
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+  }
+
+  function dayShort(date) {
+    return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()];
+  }
+
+  function num(value) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  function percent(value, target) {
+    if (!target || target <= 0) return 0;
+    return Math.max(0, Math.min(100, Math.round((value / target) * 100)));
+  }
+
+  function setBar(el, value) {
+    el.style.width = value + "%";
+  }
+
+  function valueOrEmpty(value) {
+    return value === "" ? "" : Number(value);
+  }
+
+  function show(value) {
+    return value === "" || value === undefined || value === null ? "-" : String(value);
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function csvCell(value) {
+    const text = show(value).replace(/"/g, '""');
+    return "\"" + text + "\"";
+  }
+
+  function debounce(fn, delay) {
+    let timer = null;
+    return function () {
+      const args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(function () { fn.apply(null, args); }, delay);
+    };
+  }
+})();
+</script>
+</body>
+</html>
