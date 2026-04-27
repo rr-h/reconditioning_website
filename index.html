@@ -1,175 +1,860 @@
 <!doctype html>
 <html lang="en-GB">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Reconditioning Programme Tracker</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.104.1/dist/umd/supabase.min.js" defer></script>
-<style>
-:root{--bg:#f6f7f4;--card:#fff;--soft:#eef3ee;--soft2:#f8faf8;--text:#162016;--muted:#5b675c;--line:#dfe5df;--accent:#2f6f46;--danger:#8f2525;--warn:#8a5a00;--ok:#17633a;--shadow:0 12px 30px rgba(19,36,21,.08)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}header{background:linear-gradient(135deg,#1f4f34,#4f7f5c);color:#fff;padding:28px 18px 32px}.wrap{max-width:1260px;margin:0 auto}h1,h2,h3,h4{margin:0}h1{font-size:clamp(1.9rem,4vw,3rem);letter-spacing:-.04em;line-height:1.05}h2{font-size:1.32rem}h3{font-size:1.08rem}.sub{max-width:960px;color:rgba(255,255,255,.9)}main{padding:20px 18px 50px}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.main-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(340px,.88fr);gap:18px;align-items:start;margin-top:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px}.stack{display:grid;gap:14px}.soft{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px}.muted{color:var(--muted)}.tiny{font-size:.82rem}.big{font-size:clamp(2rem,5vw,3.4rem);line-height:1;font-weight:900;letter-spacing:-.05em}.badge,.pill{display:inline-flex;align-items:center;border-radius:999px;padding:8px 12px;font-weight:800}.badge{background:#dceadd;color:var(--accent)}.pill{background:#fff;border:1px solid var(--line);font-size:.86rem;margin:4px 6px 0 0}.pill.done{background:#dceadd;color:var(--ok);border-color:#b7d7bc}label{display:block;font-size:.84rem;color:var(--muted);font-weight:700;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;color:var(--text)}input[readonly]{background:#eef1ee;color:#59635b;border-style:dashed}textarea{min-height:74px;resize:vertical}button{border:0;border-radius:999px;padding:10px 14px;background:var(--accent);color:#fff;font-weight:700;cursor:pointer}button.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent)}button.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}button.danger{background:var(--danger)}button.small{font-size:.84rem;padding:6px 10px}.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.form3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.form4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.task{display:grid;grid-template-columns:28px 1fr;gap:10px;border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px;background:#fff}.task input{width:20px;height:20px;accent-color:var(--accent)}table{width:100%;border-collapse:collapse;margin-top:10px}th,td{border-bottom:1px solid var(--line);padding:9px;text-align:left;vertical-align:top}th{font-size:.82rem;color:var(--muted);background:#f7faf7}.scroll{overflow-x:auto}.metric{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}.bar{height:9px;background:#e9eee9;border-radius:999px;overflow:hidden;margin-top:8px}.bar span{display:block;height:100%;width:0;background:var(--accent)}.alert{margin-top:12px;border-radius:14px;padding:12px;background:#fff4d7;color:var(--warn);border:1px solid #f0d58c}.bad{background:#ffe5e5;color:var(--danger);border-color:#f0b4b4}.ok{background:#dceadd;color:var(--ok);border-color:#b7d7bc}.hidden{display:none!important}.week-days{display:grid;gap:12px}.day-card{border:1px solid var(--line);border-radius:18px;background:#fff;padding:14px}.day-card.selected{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,111,70,.13)}.day-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}.day-title{font-size:1.05rem;font-weight:900}.day-plan{display:grid;gap:8px;margin-top:10px}.plan-item{border:1px solid var(--line);border-radius:13px;background:var(--soft2);padding:10px}.plan-item strong{display:block}.daily-log{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}.exercise{border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:12px;background:#fff}.exercise-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}.setgrid{display:grid;grid-template-columns:60px repeat(5,1fr);gap:8px;align-items:end;margin-top:8px}.chart{height:240px;border:1px solid var(--line);border-radius:14px;background:#fff;padding:10px;margin-top:12px}canvas{width:100%;height:100%;display:block}.footer{margin-top:18px;color:var(--muted);font-size:.84rem}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tabs a{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:8px 12px;text-decoration:none;color:var(--accent);background:#fff;font-weight:700}.weekly-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:12px}.mini-day{border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px;min-height:78px}.mini-day b{display:block}.mini-day.today{border-color:var(--accent);background:#eef7ef}.mini-day small{display:block;color:var(--muted)}
-@media(max-width:980px){.grid,.main-grid,.form,.form3,.form4{grid-template-columns:1fr}.setgrid{grid-template-columns:1fr 1fr}.setgrid b{grid-column:1/-1}.side{order:-1}.weekly-strip{grid-template-columns:1fr 1fr}.day-head{display:block}}
-@media print{header,.settings,.sync,.side,.logger,button,.tabs{display:none!important}main{padding:0}.grid,.main-grid{display:block}.card{box-shadow:none;border:1px solid #bbb;margin-bottom:12px}.day-card{break-inside:avoid}}
-</style>
-</head>
-<body>
-<header><div class="wrap"><h1>Reconditioning Programme Tracker</h1><p class="sub">Daily plan, weekly goalposts, strength progression, walking, mobility, conditioning and Supabase sync between devices.</p></div></header>
-<main><div class="wrap">
-<section class="grid">
-<div class="card settings"><h2>Programme settings</h2><p class="muted">Set the programme start date. Week 1 day 1 is the start date, then the app generates each day from the programme.</p><div class="form" style="margin-top:12px"><div><label>Programme start date</label><input id="startDate" type="date"></div><div><label>Date to view</label><input id="viewDate" type="date"></div></div><div class="row" style="margin-top:12px"><button id="saveDates">Save dates</button><button class="secondary" id="todayBtn">Today</button><button class="ghost" id="prevWeek">Previous week</button><button class="ghost" id="nextWeek">Next week</button><button class="ghost" id="printBtn">Print week</button></div></div>
-<div class="card"><div id="phaseBadge" class="badge">Phase</div><div id="weekNo" class="big">Week 1</div><p id="phaseSummary" class="muted">Set a start date.</p><div id="pills"></div></div>
-</section>
 
-<section class="card sync" style="margin-top:18px"><div class="row" style="justify-content:space-between"><div><h2>Supabase sync</h2><p class="muted">Use the same URL, publishable or anon key and private phrase on both devices.</p></div><span id="syncBadge" class="badge">Local only</span></div><div class="form3" style="margin-top:12px"><div><label>Supabase URL</label><input id="supabaseUrl" placeholder="https://your-project.supabase.co"></div><div><label>Publishable or anon key</label><input id="supabaseKey" type="password" placeholder="sb_publishable_... or eyJ..."></div><div><label>Device name</label><input id="deviceName" placeholder="Laptop or phone"></div></div><div class="form" style="margin-top:12px"><div><label>Private sync phrase</label><input id="syncPhrase" type="password" placeholder="Minimum 16 characters"></div><div><label>Derived sync ID</label><input id="syncId" readonly placeholder="Created on connect"></div></div><div class="row" style="margin-top:12px"><button id="connectSync">Connect and sync</button><button class="secondary" id="syncNow">Sync now</button><button class="ghost" id="disconnectSync">Disconnect</button></div><div id="syncStatus" class="alert hidden"></div></section>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Reconditioning Programme Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.104.1/dist/umd/supabase.min.js" defer></script>
+    <style>
+      :root {
+        --bg: #f6f7f4;
+        --card: #fff;
+        --soft: #eef3ee;
+        --soft2: #f8faf8;
+        --text: #162016;
+        --muted: #5b675c;
+        --line: #dfe5df;
+        --accent: #2f6f46;
+        --danger: #8f2525;
+        --warn: #8a5a00;
+        --ok: #17633a;
+        --shadow: 0 12px 30px rgba(19, 36, 21, .08)
+      }
 
-<section class="main-grid">
-<div class="stack">
-<div class="card"><h2>This week's focus</h2><p id="focus" class="muted"></p><div id="goals"></div><div id="weekStrip" class="weekly-strip"></div></div>
-<div class="card"><div class="row" style="justify-content:space-between"><div><h2>Selected day</h2><p id="todayIntro" class="muted"></p></div><span id="dayStatus" class="badge">Not logged</span></div><div id="todayTasks"></div></div>
-<div class="card"><div class="row" style="justify-content:space-between"><div><h2>Full week plan</h2><p class="muted">Scroll each day. The current day is highlighted and each card contains its own plan and tracking.</p></div><div class="tabs" id="dayJump"></div></div><div id="weekPlan" class="week-days"></div></div>
-<div class="card logger"><h2>Log strength session</h2><p class="muted">Targets are read-only suggestions from the plan and previous logs. Enter what was actually done. Added sets are kept and synced.</p><div class="form3" style="margin-top:12px"><div><label>Session date</label><input id="strengthDate" type="date"></div><div><label>Session</label><select id="sessionName"></select></div><div><label>Session RPE</label><input id="sessionRpe" type="text" inputmode="decimal" autocomplete="off"></div></div><div id="strengthLogger"></div><label style="margin-top:12px">Session notes</label><textarea id="strengthNotes" placeholder="Pain, form, fatigue, changes"></textarea><div class="row" style="margin-top:12px"><button id="saveStrength">Save strength session</button><button id="clearDraft" class="ghost">Clear draft</button></div><div id="strengthStatus" class="alert hidden"></div></div>
-<div class="card"><h2>Strength exercises for this phase</h2><p id="strengthIntro" class="muted"></p><div id="strengthTables"></div></div>
-<div class="card"><h2>Walking, conditioning and mobility details</h2><div id="walking"></div><div id="conditioning"></div></div>
-</div>
-<aside class="stack side">
-<div class="card"><h2>Weekly totals</h2><p class="muted">These are calculated from daily logs and saved strength sessions. Weight and waist are logged once weekly on Sunday, because daily scale drama is not the programme.</p><div class="stack" style="margin-top:12px"><div class="metric"><label>Walking minutes</label><input id="walkMin" type="text" readonly><div class="bar"><span id="walkBar"></span></div><small id="walkTarget" class="muted"></small></div><div class="metric"><label>Walking sessions</label><input id="walkSess" type="text" readonly><div class="bar"><span id="walkSessBar"></span></div><small id="walkSessTarget" class="muted"></small></div><div class="metric"><label>Strength sessions</label><input id="strengthSess" type="text" readonly><div class="bar"><span id="strengthBar"></span></div><small id="strengthTarget" class="muted"></small></div><div class="metric"><label>Conditioning sessions</label><input id="condSess" type="text" readonly><div class="bar"><span id="condBar"></span></div><small id="condTarget" class="muted"></small></div><div class="metric"><label>Mobility days</label><input id="mobDays" type="text" readonly><div class="bar"><span id="mobBar"></span></div><small id="mobTarget" class="muted"></small></div><div class="metric"><label>Latest pain 0 to 10</label><input id="pain" type="text" readonly></div><div class="metric"><label>Sunday weight kg</label><input id="weight" type="text" readonly></div><div class="metric"><label>Sunday waist cm</label><input id="waist" type="text" readonly></div></div><div id="weekStatus" class="alert hidden"></div></div>
-<div class="card"><h2>Cumulative progress</h2><div id="cumulative"></div><div class="chart"><canvas id="weeklyChart" width="700" height="240"></canvas></div></div>
-<div class="card"><h2>Exercise progress</h2><label>Exercise</label><select id="chartExercise"></select><div class="chart"><canvas id="exerciseChart" width="700" height="240"></canvas></div><div id="exerciseTable"></div></div>
-<div class="card"><h2>History and export</h2><div class="row"><button class="secondary" id="exportDaily">Export daily CSV</button><button class="secondary" id="exportStrength">Export strength CSV</button><button class="secondary" id="exportJson">Export JSON</button></div><label class="row" style="margin-top:12px"><span class="pill">Import JSON backup</span><input id="importJson" type="file" accept="application/json" class="hidden"></label><button class="danger" id="resetLocal" style="margin-top:12px">Reset local data</button><div id="history"></div></div>
-</aside>
-</section>
-<div class="footer">Private static tracker. Data is stored locally first and synced to Supabase only when sync is connected.</div>
-</div></main>
-<script>
-window.addEventListener("DOMContentLoaded",function(){(function(){
-"use strict";
-const K="reconditioningProgrammeTracker.v7";
-const OLD_KEYS=["reconditioningProgrammeTracker.v6","reconditioningProgrammeTracker.v5"];
-const SYNC_DELAY=1200;
-const DAY_NAMES=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-const DAY_SHORT=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-function ex(n,t,s1,s2,r1,r2,note,u,rest){return{name:n,type:t,setsMin:s1,setsMax:s2,repsMin:r1,repsMax:r2,note:note||"",unit:u||"reps",rest:rest||"90 sec"};}
-const mobilityFlow=["Breathing reset - 1 min","Cat-cow - 8 to 10 reps","Hip flexor stretch - 45 sec each side","Hamstring flossing - 8 to 10 each side","Calf mobility against wall - 45 sec each side","Thoracic rotations - 8 each side","Supported squat hold - 30 to 60 sec"];
-const phases=[
-{id:1,name:"Phase 1",label:"Weeks 1 to 4",weeks:[1,4],summary:"Rebuild movement tolerance, walking capacity and conservative strength.",focus:"Make training repeatable. Keep leg symptoms controlled and avoid next-day flare-ups.",targets:{1:[90,10,2,0,5,"Two walks daily, 8 to 12 min each."],2:[120,10,2,0,5,"Two walks daily, 10 to 15 min each, or one 20 min broken walk."],3:[150,10,3,0,6,"One to two walks daily, 15 to 20 min each as tolerated."],4:[175,8,3,0,6,"20 to 30 min total daily walking, broken if needed."]},goals:["5 to 6 walking days.","2 to 3 strength sessions at RPE 5 to 6.","10 min mobility most days.","No gait-changing pain or 48 hour flare."],intro:"Alternate A and B. Friday alternates A on odd weeks and B on even weeks.",strength:{A:[ex("Bench box squat or sit-to-stand","Squat",2,3,8,10,"Bench height allows controlled reps without knee or calf flare.","reps","90 sec"),ex("Barbell Romanian deadlift","Hinge",2,3,8,10,"Light load. Hips back, soft knees, neutral spine.","reps","90 sec"),ex("Barbell bench press or floor press","Push",2,3,8,10,"Choose floor press if bench set-up feels unsafe.","reps","90 sec"),ex("Barbell row","Pull",2,3,8,12,"Strict torso position.","reps","90 sec"),ex("Standing calf raise","Calf",2,2,10,15,"Slow up and down. Stop before cramping.","reps","60 sec"),ex("Dead bug","Core",2,2,6,10,"Each side. Exhale fully, ribs down.","reps","45 sec")],B:[ex("Low step-up or supported split squat","Single-leg",2,2,6,8,"Each side. Use a low step.","reps","90 sec"),ex("Glute bridge or barbell hip thrust","Hip thrust",2,3,10,12,"Pause 1 sec at top.","reps","90 sec"),ex("Overhead press","Push",2,2,6,10,"Light load, ribs down.","reps","90 sec"),ex("Barbell row","Pull",2,3,8,12,"Controlled reps.","reps","90 sec"),ex("Loaded hold or farmer hold","Carry",2,2,20,40,"Use any safe load.","seconds","60 sec"),ex("Side plank from knees","Core",2,2,15,30,"Each side. Stop before form collapses.","seconds","45 sec")]}},
-{id:2,name:"Phase 2",label:"Weeks 5 to 8",weeks:[5,8],summary:"Build aerobic base, consistent full-body strength and first low-impact conditioning.",focus:"Reach consistent moderate activity volume while maintaining recovery.",targets:{5:[175,5,3,1,5,"2 to 3 easy walks, one interval walk and one longer broken walk."],6:[190,5,3,1,5,"Easy walks 30 to 35 min, intervals 4 min brisk / 2 min easy."],7:[210,5,3,1,5,"Two interval walks if tolerated and a longer broken walk."],8:[220,6,3,1,5,"Five to six walks, including 5 min brisk / 90 sec easy intervals."]},goals:["150 to 220 weekly walking minutes.","3 full-body strength sessions if recovery is good.","One low-impact conditioning exposure.","RPE mostly 6 to 7."],intro:"Use three full-body sessions. Friday alternates A and B.",strength:{A:[ex("Bench box squat or box squat","Squat",3,3,8,12,"RPE 6.","reps","90 sec"),ex("Barbell Romanian deadlift","Hinge",3,3,8,10,"Clean hinge.","reps","120 sec"),ex("Bench press or floor press","Push",3,3,8,12,"Controlled.","reps","90 sec"),ex("Barbell row","Pull",3,3,8,12,"Strict reps.","reps","90 sec"),ex("Standing calf raise","Calf",3,3,10,20,"Slow.","reps","60 sec"),ex("Dead bug","Core",3,3,8,12,"Each side.","reps","45 sec")],B:[ex("Step-up","Single-leg",3,3,8,12,"Each side.","reps","90 sec"),ex("Barbell hip thrust","Hip thrust",3,3,8,12,"Pause at top.","reps","90 sec"),ex("Overhead press","Push",3,3,6,10,"Avoid lumbar extension.","reps","120 sec"),ex("Barbell row","Pull",3,3,8,12,"Controlled.","reps","90 sec"),ex("Loaded hold","Carry",3,3,30,45,"Brace and breathe.","seconds","60 sec"),ex("Side plank","Core",3,3,20,40,"Each side.","seconds","45 sec")]}},
-{id:3,name:"Phase 3",label:"Weeks 9 to 16",weeks:[9,16],summary:"Consolidate fat-loss training with higher aerobic volume and controlled conditioning.",focus:"Build towards 240 to 300 min weekly aerobic work while protecting strength recovery.",targets:{9:[240,5,3,1,5,"Five walks, 35 to 45 min."],10:[250,5,3,1,5,"Five walks, around 40 to 45 min."],11:[260,5,3,1,5,"Five walks plus short add-ons."],12:[270,5,3,1,5,"Include one brisk interval walk."],13:[280,6,3,2,5,"Six walks, add small incline blocks if stable."],14:[290,6,3,2,5,"Six walks, mixed easy and brisk pace."],15:[300,6,3,2,5,"Six walks, one long walk and one interval walk."],16:[300,6,3,2,5,"Six walks, aim for one 60 min walk with breaks."]},goals:["240 to 300 weekly aerobic minutes.","3 strength sessions.","1 to 2 conditioning sessions.","Progress duration before incline, speed or load."],intro:"Full-body sessions A, B and C. Sunday is strength C if recovery is good, otherwise recovery walk.",strength:{A:[ex("Box squat or squat to bench","Squat",3,4,6,10,"Add reps until all sets hit 10, then add 2.5 to 5 kg.","reps","120 sec"),ex("Bench press","Push",3,4,6,10,"Shoulder blades set, feet stable.","reps","120 sec"),ex("Barbell row","Pull",3,4,8,12,"Strict reps.","reps","90 sec"),ex("Barbell Romanian deadlift","Hinge",2,3,8,10,"Stop if back, not hamstrings, becomes limiting.","reps","120 sec"),ex("Standing calf raise","Calf",3,3,10,20,"Full range.","reps","60 sec"),ex("Dead bug","Core",3,3,8,12,"Each side.","reps","45 sec")],B:[ex("Barbell Romanian deadlift","Hinge",3,4,6,10,"Clean hinge.","reps","120 sec"),ex("Overhead press","Push",3,3,6,10,"Avoid lumbar extension.","reps","120 sec"),ex("Step-up","Single-leg",3,3,8,12,"Each side. Increase step height only after control is excellent.","reps","90 sec"),ex("Barbell row","Pull",3,3,8,12,"Keep torso still.","reps","90 sec"),ex("Barbell hip thrust","Hip thrust",3,3,8,12,"Pause at top.","reps","90 sec"),ex("Side plank","Core",3,3,20,45,"Each side.","seconds","45 sec")],C:[ex("Front-loaded squat variation or box squat","Squat",3,3,8,12,"Progress depth slowly.","reps","120 sec"),ex("Floor press or bench press","Push",3,3,8,12,"Keep 2 to 3 reps in reserve.","reps","90 sec"),ex("Supported split squat or reverse lunge","Single-leg",2,3,6,10,"Each side. Start shallow and supported.","reps","90 sec"),ex("Barbell row","Pull",3,3,8,12,"Controlled eccentric.","reps","90 sec"),ex("Standing calf raise slow eccentric","Calf",3,3,12,20,"3 sec lowering phase.","reps","60 sec"),ex("Loaded hold","Carry",3,3,30,60,"Brace and breathe.","seconds","60 sec")]}},
-{id:4,name:"Phase 4",label:"Months 4 to 12",weeks:[17,52],summary:"Sustain fat loss, restore robust recreational fitness and keep progressing.",focus:"Maintain 300 or more weekly aerobic minutes, 3 strength sessions and controlled conditioning.",defaultTarget:[320,6,3,2,5,"Six aerobic sessions including one longer walk and one brisk or incline session."],targets:{},goals:["300 to 420 weekly aerobic minutes.","3 full-body strength sessions.","1 to 2 boxing or conditioning sessions.","Deload every 4 to 6 weeks if fatigue accumulates."],intro:"Full-body sessions A, B and C. Sunday can be C or active recovery depending on fatigue.",strength:{A:[ex("Box squat or squat to bench","Squat",3,4,6,10,"Add reps until all sets hit 10, then add 2.5 to 5 kg.","reps","120 sec"),ex("Bench press","Push",3,4,6,10,"Shoulder blades set and feet stable.","reps","120 sec"),ex("Barbell row","Pull",3,4,8,12,"Strict reps.","reps","90 sec"),ex("Barbell Romanian deadlift","Hinge",2,3,8,10,"Clean hinge.","reps","120 sec"),ex("Standing calf raise","Calf",3,3,10,20,"Full range.","reps","60 sec"),ex("Dead bug","Core",3,3,8,12,"Each side.","reps","45 sec")],B:[ex("Barbell Romanian deadlift","Hinge",3,4,6,10,"Add load only while hinge remains clean.","reps","120 sec"),ex("Overhead press","Push",3,3,6,10,"Avoid lumbar extension.","reps","120 sec"),ex("Step-up","Single-leg",3,3,8,12,"Each side.","reps","90 sec"),ex("Barbell row","Pull",3,3,8,12,"Keep torso still.","reps","90 sec"),ex("Barbell hip thrust","Hip thrust",3,3,8,12,"Pause at top.","reps","90 sec"),ex("Side plank","Core",3,3,20,45,"Each side.","seconds","45 sec")],C:[ex("Front-loaded squat variation or box squat","Squat",3,3,8,12,"Safe variation, progress depth slowly.","reps","120 sec"),ex("Floor press or bench press","Push",3,3,8,12,"Keep 2 to 3 reps in reserve.","reps","90 sec"),ex("Supported split squat or reverse lunge","Single-leg",2,3,6,10,"Each side.","reps","90 sec"),ex("Barbell row","Pull",3,3,8,12,"Controlled eccentric.","reps","90 sec"),ex("Standing calf raise slow eccentric","Calf",3,3,12,20,"3 sec lowering phase.","reps","60 sec"),ex("Loaded hold","Carry",3,3,30,60,"Brace and breathe.","seconds","60 sec")]}}
-];
-const $=id=>document.getElementById(id);
-const els={start:$("startDate"),view:$("viewDate"),saveDates:$("saveDates"),today:$("todayBtn"),prevWeek:$("prevWeek"),nextWeek:$("nextWeek"),print:$("printBtn"),phase:$("phaseBadge"),week:$("weekNo"),summary:$("phaseSummary"),pills:$("pills"),url:$("supabaseUrl"),key:$("supabaseKey"),dev:$("deviceName"),phrase:$("syncPhrase"),syncId:$("syncId"),connect:$("connectSync"),syncNow:$("syncNow"),disc:$("disconnectSync"),syncStatus:$("syncStatus"),syncBadge:$("syncBadge"),focus:$("focus"),goals:$("goals"),weekStrip:$("weekStrip"),todayIntro:$("todayIntro"),todayTasks:$("todayTasks"),dayStatus:$("dayStatus"),dayJump:$("dayJump"),weekPlan:$("weekPlan"),walking:$("walking"),conditioning:$("conditioning"),strengthIntro:$("strengthIntro"),strengthTables:$("strengthTables"),sDate:$("strengthDate"),sName:$("sessionName"),sRpe:$("sessionRpe"),sLog:$("strengthLogger"),sNotes:$("strengthNotes"),saveStrength:$("saveStrength"),clearDraft:$("clearDraft"),sStatus:$("strengthStatus"),walkMin:$("walkMin"),walkSess:$("walkSess"),strengthSess:$("strengthSess"),condSess:$("condSess"),mobDays:$("mobDays"),pain:$("pain"),weight:$("weight"),waist:$("waist"),walkBar:$("walkBar"),walkSessBar:$("walkSessBar"),strengthBar:$("strengthBar"),condBar:$("condBar"),mobBar:$("mobBar"),walkTarget:$("walkTarget"),walkSessTarget:$("walkSessTarget"),strengthTarget:$("strengthTarget"),condTarget:$("condTarget"),mobTarget:$("mobTarget"),weekStatus:$("weekStatus"),cumulative:$("cumulative"),weeklyChart:$("weeklyChart"),chartEx:$("chartExercise"),chart:$("exerciseChart"),exTable:$("exerciseTable"),exportDaily:$("exportDaily"),exportStrength:$("exportStrength"),exportJson:$("exportJson"),importJson:$("importJson"),reset:$("resetLocal"),hist:$("history")};
-let state=load(),ctx=null,supabaseClient=null,syncTimer=null,syncing=false,pendingSync=false,renderQueued=false;
-init();
-function init(){norm();els.start.value=state.startDate||"";els.view.value=state.viewDate||today();els.sDate.value=els.view.value;els.url.value=state.sync.url||"";els.key.value=state.sync.key||"";els.dev.value=state.sync.device||guessDevice();els.syncId.value=state.sync.id?state.sync.id.slice(0,12)+"...":"";bind();if(state.sync.on){syncNow(true).then(()=>render()).catch(()=>render());}else{render();}}
-function bind(){els.saveDates.onclick=saveDates;els.today.onclick=()=>{els.view.value=today();saveDates();};els.prevWeek.onclick=()=>moveWeek(-1);els.nextWeek.onclick=()=>moveWeek(1);els.print.onclick=()=>print();[els.start,els.view].forEach(e=>e.onchange=saveDates);els.sName.onchange=()=>{saveDraftLocal();renderLogger();};els.sDate.onchange=()=>{saveDraftLocal();state.viewDate=els.sDate.value;els.view.value=els.sDate.value;save(false);render();};[els.sRpe,els.sNotes].forEach(e=>e.addEventListener("input",saveDraftLocal));els.saveStrength.onclick=saveStrength;els.clearDraft.onclick=()=>{delete state.drafts[draftKey()];save(true);renderLogger();};els.connect.onclick=connectSync;els.syncNow.onclick=()=>syncNow(true);els.disc.onclick=disconnectSync;els.exportDaily.onclick=exportDaily;els.exportStrength.onclick=exportStrength;els.exportJson.onclick=exportJson;els.importJson.onchange=importJson;els.reset.onclick=resetLocal;els.chartEx.onchange=drawExerciseChart;window.addEventListener("online",scheduleSync);window.addEventListener("focus",()=>syncNow(false));document.addEventListener("visibilitychange",()=>{if(!document.hidden)syncNow(false);});setInterval(()=>{if(state.sync.on&&!document.hidden)syncNow(false);},30000);}
-function saveDates(){state.startDate=els.start.value;state.viewDate=els.view.value||today();state.startUpdated=iso();els.sDate.value=state.viewDate;save(true);render();}
-function moveWeek(delta){if(!state.startDate)return;const serial=dateSerial(els.view.value||today())+delta*7;els.view.value=serialToDate(serial);saveDates();}
-function render(){syncUi();if(!state.startDate){empty();history();return;}const c=calcContext(state.viewDate||today());ctx=c;els.phase.textContent=c.phase.name+" - "+c.phase.label;els.week.textContent="Week "+c.week;els.summary.textContent=c.phase.summary;els.focus.textContent=c.phase.focus;els.pills.innerHTML=["Walking "+c.target.walkMin+" min",c.target.walkSess+" walks",c.target.strength+" strength",c.target.cond+" conditioning",c.target.mob+" mobility days"].map(x=>'<span class="pill">'+esc(x)+'</span>').join("");renderGoals();renderWeekStrip();renderSelectedDay();renderWeekPlan();renderDetails();renderStrengthTables();sessionOptions();renderWeeklyTotals();history();chartOptions();}
-function empty(){ctx=null;els.phase.textContent="No start date";els.week.textContent="Set start date";["summary","focus","pills","goals","weekStrip","todayIntro","todayTasks","weekPlan","walking","conditioning","strengthTables","sLog","cumulative"].forEach(k=>els[k].innerHTML="");}
-function calcContext(dateStr){const startS=dateSerial(state.startDate),viewS=dateSerial(dateStr),diff=Math.max(0,viewS-startS),week=Math.floor(diff/7)+1,dayIndex=diff%7,phase=getPhase(week),target=getTarget(phase,week);return{startSerial:startS,viewSerial:viewS,viewDate:serialToDate(viewS),week,dayIndex,programmeDay:DAY_NAMES[dayIndex],phase,target,weekStartSerial:startS+(week-1)*7};}
-function renderGoals(){els.goals.innerHTML=ctx.phase.goals.map((g,i)=>'<span class="pill">'+esc(g)+'</span>').join("");}
-function renderWeekStrip(){const parts=[];for(let i=0;i<7;i++){const ds=serialToDate(ctx.weekStartSerial+i),dc=calcContext(ds),p=dayPlan(dc),log=getDayLog(ds),done=completion(ds,p),todayCls=ds===ctx.viewDate?" today":"";parts.push('<div class="mini-day'+todayCls+'"><b>'+DAY_SHORT[i]+'</b><small>'+formatDate(ds)+'</small><small>'+p.items.map(x=>x.label).join(', ')+'</small><span class="tiny muted">'+done.done+'/'+done.total+' tasks</span></div>');}els.weekStrip.innerHTML=parts.join("");}
-function renderSelectedDay(){const p=dayPlan(ctx),log=getDayLog(ctx.viewDate),done=completion(ctx.viewDate,p);els.todayIntro.textContent=ctx.programmeDay+" - "+formatDate(ctx.viewDate)+" - week "+ctx.week;els.dayStatus.textContent=done.total?done.done+"/"+done.total+" tasks":"No tasks";els.dayStatus.className="badge"+(done.total&&done.done===done.total?" ok":"");els.todayTasks.innerHTML=dayCardHtml(ctx.viewDate,true);bindDayCard(els.todayTasks);}
-function renderWeekPlan(){els.dayJump.innerHTML="";els.weekPlan.innerHTML="";const cards=[];const jumps=[];for(let i=0;i<7;i++){const ds=serialToDate(ctx.weekStartSerial+i),name=DAY_NAMES[i];jumps.push('<a href="#day-'+ds+'">'+DAY_SHORT[i]+'</a>');cards.push(dayCardHtml(ds,false));}els.dayJump.innerHTML=jumps.join("");els.weekPlan.innerHTML=cards.join("");bindDayCard(els.weekPlan);}
-function dayCardHtml(dateStr,compact){const c=calcContext(dateStr),p=dayPlan(c),log=getDayLog(dateStr),isSel=dateStr===ctx.viewDate,done=completion(dateStr,p),strength=p.items.find(x=>x.kind==="strength"),cardClass=compact?"":" day-card"+(isSel?" selected":""),isSunday=c.dayIndex===6;const plan=p.items.map(item=>planItemHtml(dateStr,item)).join("");let strengthHtml="";if(strength){const rows=(c.phase.strength[strength.session]||[]).map(r=>'<tr><td>'+esc(r.name)+'</td><td>'+sets(r)+'</td><td>'+range(r)+'</td><td>'+esc(r.rest)+'</td></tr>').join("");strengthHtml='<details><summary>Session '+strength.session+' exercises</summary><div class="scroll"><table><thead><tr><th>Exercise</th><th>Sets</th><th>Reps/sec</th><th>Rest</th></tr></thead><tbody>'+rows+'</tbody></table></div></details><button class="small secondary" data-load-strength="'+dateStr+'" data-session="'+strength.session+'">Load strength logger</button>';}
-const bodyMetricsHtml=isSunday?'<div><label>Weight kg</label><input type="text" inputmode="decimal" data-day="'+dateStr+'" data-field="weight" value="'+escA(show(log.weight))+'"></div><div><label>Waist cm</label><input type="text" inputmode="decimal" data-day="'+dateStr+'" data-field="waist" value="'+escA(show(log.waist))+'"></div>':'<div class="soft" style="grid-column:1/-1"><b>Weight and waist</b><br><span class="muted">Log these once weekly on Sunday. Daily weighing is not needed here, because apparently bathroom scales already receive enough attention.</span></div>';
-const logHtml='<div class="daily-log"><h4>Daily log</h4><div class="form4"><div><label>Walking min</label><input type="text" inputmode="decimal" data-day="'+dateStr+'" data-field="walkingMin" value="'+escA(show(log.walkingMin))+ '"></div><div><label>Mobility min</label><input type="text" inputmode="decimal" data-day="'+dateStr+'" data-field="mobilityMin" value="'+escA(show(log.mobilityMin))+'"></div><div><label>Conditioning min</label><input type="text" inputmode="decimal" data-day="'+dateStr+'" data-field="conditioningMin" value="'+escA(show(log.conditioningMin))+'"></div><div><label>Pain 0 to 10</label><input type="text" inputmode="decimal" data-day="'+dateStr+'" data-field="pain" value="'+escA(show(log.pain))+'"></div>'+bodyMetricsHtml+'<div><label>Notes</label><input type="text" data-day="'+dateStr+'" data-field="notes" value="'+escA(log.notes||"")+'"></div><div><label>&nbsp;</label><button class="small ghost" data-view-day="'+dateStr+'">View day</button></div></div></div>';
-return '<div id="day-'+dateStr+'" class="'+cardClass.trim()+'"><div class="day-head"><div><div class="day-title">'+esc(c.programmeDay)+' - '+esc(formatDate(dateStr))+'</div><p class="muted tiny">Week '+c.week+', '+esc(c.phase.name)+'. '+done.done+'/'+done.total+' tasks done.</p></div><span class="badge">'+esc(p.recovery)+'</span></div><div class="day-plan">'+plan+'</div>'+strengthHtml+logHtml+'</div>';}
-function planItemHtml(dateStr,item){const checked=taskDone(dateStr,item.id),body='<strong>'+esc(item.label)+'</strong><span class="muted">'+esc(item.detail)+'</span>';return '<label class="task"><input type="checkbox" data-task-day="'+dateStr+'" data-task-id="'+escA(item.id)+'" '+(checked?'checked':'')+'><div>'+body+'</div></label>';}
-function bindDayCard(root){root.querySelectorAll("input[data-task-day]").forEach(cb=>cb.onchange=()=>{const log=getDayLog(cb.dataset.taskDay);log.tasks=log.tasks||{};log.tasks[cb.dataset.taskId]={checked:cb.checked,updated:iso()};log.updated=iso();state.dayLogs[cb.dataset.taskDay]=log;save(true);renderWeeklyTotals();renderWeekStrip();});root.querySelectorAll("input[data-day]").forEach(inp=>inp.addEventListener("input",()=>{const log=getDayLog(inp.dataset.day);log[inp.dataset.field]=inp.value;log.updated=iso();state.dayLogs[inp.dataset.day]=log;save(true);renderWeeklyTotals();}));root.querySelectorAll("button[data-load-strength]").forEach(b=>b.onclick=()=>{saveDraftLocal();els.sDate.value=b.dataset.loadStrength;els.view.value=b.dataset.loadStrength;state.viewDate=b.dataset.loadStrength;els.sName.value=b.dataset.session;save(false);render();location.hash="strengthLogger";});root.querySelectorAll("button[data-view-day]").forEach(b=>b.onclick=()=>{els.view.value=b.dataset.viewDay;saveDates();});}
-function dayPlan(c){const phase=c.phase.id,day=c.dayIndex,week=c.week,odd=week%2===1;const items=[];let recovery="Planned";function add(kind,label,detail,extra){items.push(Object.assign({id:kind+"-"+items.length,kind,label,detail},extra||{}));}
-if(phase===1){if(day===0){add("strength","Strength A","Full-body session A, RPE 5 to 6, then easy walk.",{session:"A"});add("walk","Easy walk",walkText("short",week));}if(day===1){add("walk","Walking intervals",walkText("interval",week));add("mobility","Mobility flow","10 min: "+mobilityFlow.join("; "));}if(day===2){add("strength","Strength B","Full-body session B, RPE 5 to 6, then easy walk.",{session:"B"});add("walk","Easy walk",walkText("short",week));}if(day===3){add("walk","Walking intervals",walkText("interval",week));add("mobility","Mobility flow","10 min: "+mobilityFlow.join("; "));}if(day===4){const s=odd?"A":"B";add("strength","Strength "+s,"Alternating Friday strength session. Keep RPE 5 to 6.",{session:s});add("walk","Easy walk",walkText("short",week));}if(day===5){add("walk","Longer broken walk",walkText("long",week));add("mobility","Mobility if stiff","Use calf, hip flexor and thoracic work for 5 to 10 min if stiff.");}if(day===6){recovery="Recovery emphasis";add("walk","Recovery walk",walkText("recovery",week));add("mobility","Yoga or flow","10 to 15 min easy flow.");}}
-if(phase===2){if(day===0){add("strength","Strength A","Full-body session A, RPE 6 to 7.",{session:"A"});add("walk","Easy walk","10 to 15 min easy walk after lifting or separately.");}if(day===1){add("walk","Capacity interval walk",walkText("capacity",week));add("mobility","Mobility","10 min mobility flow.");}if(day===2){add("strength","Strength B","Full-body session B, RPE 6 to 7.",{session:"B"});add("walk","Optional easy walk","10 min easy walk if recovery is good.");}if(day===3){add("walk","Easy walk",walkText("easy",week));add("mobility","Mobility","10 min mobility flow.");}if(day===4){const s=odd?"A":"B";add("strength","Strength "+s,"Alternating Friday strength session.",{session:s});add("conditioning","Optional shadow boxing","5 to 10 min technique only, or 6 x 60 sec with 90 sec rest if tolerated.");}if(day===5){add("walk","Longer broken walk",walkText("long",week));add("mobility","Calf and hip mobility","5 to 10 min after walking.");}if(day===6){recovery="Recovery or rest";add("walk","Recovery walk or rest","20 to 30 min recovery walk if fresh, otherwise rest.");add("mobility","Yoga or flow","10 to 15 min easy flow.");}}
-if(phase===3){if(day===0){add("strength","Strength A","Full-body session A. Keep 2 to 3 reps in reserve.",{session:"A"});add("walk","Easy walk","10 to 15 min easy walk.");}if(day===1){add("walk","Brisk walking intervals",walkText("brisk",week));add("mobility","Mobility","10 min mobility flow.");}if(day===2){add("walk","Zone 2 easy walk",walkText("zone2",week));add("mobility","Yoga or flow","10 to 15 min easy flow.");}if(day===3){add("strength","Strength B","Full-body session B. Keep 2 to 3 reps in reserve.",{session:"B"});add("walk","Easy walk","10 to 15 min easy walk.");}if(day===4){add("conditioning","Boxing or low-impact conditioning",conditioningText(week));add("mobility","Optional mobility","5 to 10 min if stiff.");}if(day===5){add("walk","Long walk",walkText("long",week));add("mobility","Calf and hip mobility","5 to 10 min after walking.");}if(day===6){recovery="Choose by recovery";add("strength","Strength C if recovered","Do strength C if fatigue and leg symptoms are controlled. Otherwise do recovery walk.",{session:"C"});add("walk","Recovery walk alternative","20 to 40 min easy walk if not lifting.");}}
-if(phase===4){if(day===0){add("strength","Full-body strength A","Progress gradually. Deload if fatigue accumulates.",{session:"A"});}if(day===1){add("walk","Brisk walking intervals","35 to 50 min total. Include brisk or incline blocks only if flat walking is stable.");}if(day===2){add("walk","Zone 2 walk","40 to 60 min easy to moderate.");add("mobility","Mobility","10 min mobility flow.");}if(day===3){add("strength","Full-body strength B","Progress gradually. Keep most sets below failure.",{session:"B"});}if(day===4){add("conditioning","Boxing or aerobic conditioning","20 to 35 min. Boxing, low-impact circuit or brisk intervals at RPE 6 to 7.");}if(day===5){add("walk","Long walk or hike","60 to 90 min, broken if needed.");}if(day===6){recovery="Choose by recovery";add("strength","Full-body strength C if recovered","Do C if recovered; otherwise active recovery walk.",{session:"C"});add("walk","Active recovery alternative","20 to 45 min easy walk.");}}
-return{items,recovery};}
-function walkText(type,week){const weekMap={1:{short:"8 to 12 min easy, twice daily if useful.",interval:"Walk until discomfort reaches 3 to 4/10, rest 1 to 3 min, repeat for 8 to 12 min.",long:"20 to 30 min total, broken as needed.",recovery:"8 to 15 min very easy."},2:{short:"10 to 15 min easy.",interval:"10 to 15 min intervals. Keep flat ground or treadmill.",long:"25 to 35 min broken walk.",recovery:"15 to 20 min easy or rest."},3:{short:"15 to 20 min easy.",interval:"15 to 20 min intervals as tolerated.",long:"30 to 45 min broken walk.",recovery:"15 to 25 min easy."},4:{short:"20 to 30 min total daily walking, broken if needed.",interval:"20 to 30 min total, broken by symptoms.",long:"35 to 45 min broken walk.",recovery:"20 to 30 min easy."}};if(week<=4)return(weekMap[week]&&weekMap[week][type])||weekMap[Math.min(week,4)].short;if(week===5)return{capacity:"5 min warm-up, 3 min brisk / 2 min easy x 4, cool-down.",easy:"25 to 30 min easy.",long:"35 to 45 min broken."}[type]||"25 to 30 min easy.";if(week===6)return{capacity:"4 min brisk / 2 min easy x 4 to 5.",easy:"30 to 35 min easy.",long:"40 to 50 min broken."}[type]||"30 to 35 min easy.";if(week===7)return{capacity:"5 min brisk / 2 min easy x 4 to 5.",easy:"35 to 40 min easy.",long:"45 to 55 min broken."}[type]||"35 to 40 min easy.";if(week===8)return{capacity:"5 min brisk / 90 sec easy x 5.",easy:"35 to 45 min easy.",long:"50 to 60 min broken."}[type]||"35 to 45 min easy.";if(week<=10)return{brisk:"35 to 40 min with brisk blocks if tolerated.",zone2:"30 to 45 min easy to moderate.",long:"45 to 60 min broken if needed."}[type]||"35 to 45 min.";if(week<=12)return{brisk:"30 min: 5 min warm-up, 4 min brisk / 2 min easy x 4, cool-down.",zone2:"35 to 45 min easy to moderate.",long:"50 to 65 min broken if needed."}[type]||"40 to 45 min.";if(week<=14)return{brisk:"45 to 50 min with 3 x 3 min small incline blocks if stable.",zone2:"40 to 50 min easy to moderate.",long:"55 to 70 min broken if needed."}[type]||"45 to 50 min.";if(week<=16)return{brisk:"50 to 55 min mixed pace.",zone2:"40 to 55 min easy to moderate.",long:"60 min, breaks allowed."}[type]||"50 to 60 min.";return"40 to 90 min depending on the session and recovery.";}
-function conditioningText(week){if(week<9)return"Technique only: 5 to 10 min. Small footwork, no bouncing.";if(week<=16)return"3 to 5 rounds: shadow boxing 60 sec, step-back march 45 sec, incline press-up 8 to 12, hinge 10, dead bug 6 each side, rest 90 sec.";return"20 to 35 min boxing, low-impact aerobics or circuit at RPE 6 to 7.";}
-function renderDetails(){els.walking.innerHTML='<div class="soft"><b>This week walking target</b><p>'+esc(ctx.target.text)+'</p><p class="muted">Use easy walks, intervals and longer broken walks according to the daily cards. Keep gait normal and reduce volume after next-day flare.</p></div>';els.conditioning.innerHTML='<div class="soft"><b>Mobility flow</b><p>'+esc(mobilityFlow.join('; '))+'</p></div><div class="soft"><b>Conditioning rule</b><p>'+esc(conditioningText(ctx.week))+'</p></div>';}
-function renderStrengthTables(){els.strengthIntro.textContent=ctx.phase.intro;els.strengthTables.innerHTML=Object.keys(ctx.phase.strength).map(s=>'<details '+(s===suggestSession()?"open":"")+'><summary>Session '+s+'</summary><div class="scroll"><table><thead><tr><th>Exercise</th><th>Sets</th><th>Reps/sec</th><th>Rest</th><th>Notes</th></tr></thead><tbody>'+ctx.phase.strength[s].map(r=>'<tr><td>'+esc(r.name)+'</td><td>'+sets(r)+'</td><td>'+range(r)+'</td><td>'+esc(r.rest)+'</td><td>'+esc(r.note)+'</td></tr>').join("")+'</tbody></table></div></details>').join("");}
-function sessionOptions(){const old=els.sName.value;els.sDate.value=els.sDate.value||ctx.viewDate;els.sName.innerHTML=Object.keys(ctx.phase.strength).map(s=>'<option value="'+s+'">Session '+s+'</option>').join("");els.sName.value=ctx.phase.strength[old]?old:suggestSession();renderLogger();}
-function renderLogger(){if(!ctx)return;const sn=els.sName.value||suggestSession(),draft=state.drafts[draftKey()]||{};els.sRpe.value=draft.rpe||"";els.sNotes.value=draft.notes||"";els.sLog.innerHTML=(ctx.phase.strength[sn]||[]).map(r=>exerciseHtml(r,draft)).join("");els.sLog.querySelectorAll("input[data-name]").forEach(i=>{i.addEventListener("input",saveDraftLocal);});els.sLog.querySelectorAll("button[data-action='add-set']").forEach(b=>b.onclick=()=>addSet(b.dataset.ex));els.sLog.querySelectorAll("button[data-action='remove-set']").forEach(b=>b.onclick=()=>removeSet(b.dataset.ex));}
-function exerciseHtml(r,draft){const sug=suggest(r),draftSets=(draft.sets||[]).filter(x=>x.exercise===r.name),desired=Math.max(sug.sets.length,draftSets.length||0),rows=[];for(let i=0;i<desired;i++){const d=draftSets.find(x=>+x.set===i+1)||{},sv=sug.sets[i]||sug.sets[sug.sets.length-1]||{w:"",v:r.repsMin};rows.push('<div class="setgrid"><b>Set '+(i+1)+'</b>'+field(r.name,i,"tw","Target kg",sv.w,true)+field(r.name,i,"aw","Actual kg",has(d,"aw")?d.aw:sv.w,false)+field(r.name,i,"tv","Target "+unit(r),sv.v,true)+field(r.name,i,"av","Actual "+unit(r),has(d,"av")?d.av:sv.v,false)+field(r.name,i,"rpe","RPE",d.rpe||"",false)+'</div>');}
-return '<div class="exercise" data-exercise="'+escA(r.name)+'"><div class="exercise-head"><div><h3>'+esc(r.name)+'</h3><p class="muted tiny">'+esc(r.type)+' - plan '+sets(r)+' x '+range(r)+'. Rest '+esc(r.rest)+'. Suggested: '+esc(sug.text)+'</p></div><div class="row"><button type="button" class="small secondary" data-action="add-set" data-ex="'+escA(r.name)+'">Add set</button><button type="button" class="small ghost" data-action="remove-set" data-ex="'+escA(r.name)+'">Remove last set</button></div></div>'+rows.join("")+'</div>';}
-function field(ex,set,name,label,val,ro){return '<div><label>'+esc(label)+'</label><input data-ex="'+escA(ex)+'" data-set="'+set+'" data-name="'+name+'" type="text" inputmode="decimal" autocomplete="off" '+(ro?'readonly':'')+' value="'+escA(show(val))+'"></div>';}
-function saveDraftLocal(){if(!ctx)return;state.drafts[draftKey()]=collectDraft();state.updatedAt=iso();localStorage.setItem(K,JSON.stringify(state));}
-function collectDraft(){const rows=[];els.sLog.querySelectorAll("input[data-name]").forEach(i=>{const setNo=Number(i.dataset.set)+1;let row=rows.find(x=>x.exercise===i.dataset.ex&&x.set===setNo);if(!row){row={exercise:i.dataset.ex,set:setNo};rows.push(row);}row[i.dataset.name]=i.value;});return{date:els.sDate.value,session:els.sName.value,rpe:els.sRpe.value,notes:els.sNotes.value.trim(),sets:rows,updated:iso()};}
-function addSet(exName){saveDraftLocal();const key=draftKey(),d=state.drafts[key]||collectDraft(),exSets=(d.sets||[]).filter(x=>x.exercise===exName),last=exSets.sort((a,b)=>a.set-b.set).slice(-1)[0]||{},nextSet=(last.set||0)+1;d.sets=d.sets||[];d.sets.push({exercise:exName,set:nextSet,tw:last.tw||"",aw:last.aw||last.tw||"",tv:last.tv||"",av:last.av||last.tv||"",rpe:""});d.updated=iso();state.drafts[key]=d;save(false);renderLogger();}
-function removeSet(exName){saveDraftLocal();const key=draftKey(),d=state.drafts[key]||collectDraft(),exSets=(d.sets||[]).filter(x=>x.exercise===exName);if(exSets.length<=1)return;const maxSet=Math.max(...exSets.map(x=>Number(x.set)||0));d.sets=(d.sets||[]).filter(x=>!(x.exercise===exName&&Number(x.set)===maxSet));d.updated=iso();state.drafts[key]=d;save(false);renderLogger();}
-function saveStrength(){if(!ctx)return;saveDraftLocal();const d=collectDraft(),sessionCtx=calcContext(d.date||ctx.viewDate),setsOut=d.sets.map(s=>{const p=findPlan(d.session,s.exercise,sessionCtx.phase)||{};return{exercise:s.exercise,type:p.type||"",unit:p.unit||"reps",set:Number(s.set),targetWeight:numOrBlank(s.tw),actualWeight:numOrBlank(s.aw),targetValue:numOrBlank(s.tv),actualValue:numOrBlank(s.av),rpe:numOrBlank(s.rpe)}}).filter(s=>s.actualWeight!==""||s.actualValue!==""||s.rpe!=="");if(!setsOut.length){alertBox(els.sStatus,"No actual set data to save.","bad");return;}const existing=(state.strength||[]).find(s=>s.date===d.date&&s.session===d.session),sess={id:existing?existing.id:id(),date:d.date,week:sessionCtx.week,phase:sessionCtx.phase.name,session:d.session,rpe:numOrBlank(d.rpe),notes:d.notes,sets:setsOut,saved:existing?existing.saved:iso(),updated:iso(),device:state.sync.device||guessDevice()};state.strength=(state.strength||[]).filter(s=>s.id!==sess.id);state.strength.push(sess);delete state.drafts[draftKey()];save(true);alertBox(els.sStatus,"Strength session saved and synced when online.","ok");render();}
-function suggest(r){const last=lastFor(r.name);if(!last)return{text:sets(r)+" x "+range(r),sets:Array.from({length:r.setsMin},()=>({w:"",v:r.repsMin}))};const ss=(last.sets||[]).filter(s=>s.exercise===r.name).sort((a,b)=>a.set-b.set),vals=ss.map(s=>num(s.actualValue)).filter(x=>x>0),weights=ss.map(s=>num(s.actualWeight)).filter(x=>x>0),maxR=max(ss.map(s=>num(s.rpe))),minV=vals.length?Math.min(...vals):r.repsMin,lastW=weights.length?max(weights):"",top=vals.length>=r.setsMin&&minV>=r.repsMax;let w=lastW,v=minV,why="repeat";if(maxR>=8.5){v=Math.max(r.repsMin,minV);why="effort high, repeat";}else if(top&&lastW!==""){const inc=incLoad(r);w=Math.round((lastW+inc)*2)/2;v=r.repsMin;why="add "+inc+" kg";}else{v=Math.min(r.repsMax,Math.max(r.repsMin,minV+1));why="add a rep";}const count=Math.min(r.setsMax,Math.max(r.setsMin,ss.length||r.setsMin));return{text:why,sets:Array.from({length:count},(_,i)=>({w:w,v:v}))};}
-function renderWeeklyTotals(){if(!ctx)return;const t=weekTotals(ctx.week),latest=latestMetrics(ctx.week);els.walkMin.value=show(t.walkMin);els.walkSess.value=show(t.walkSess);els.strengthSess.value=show(t.strengthSess);els.condSess.value=show(t.condSess);els.mobDays.value=show(t.mobDays);els.pain.value=show(latest.pain);els.weight.value=show(latest.weight);els.waist.value=show(latest.waist);bar(els.walkBar,t.walkMin,ctx.target.walkMin);bar(els.walkSessBar,t.walkSess,ctx.target.walkSess);bar(els.strengthBar,t.strengthSess,ctx.target.strength);bar(els.condBar,t.condSess,Math.max(1,ctx.target.cond));bar(els.mobBar,t.mobDays,ctx.target.mob);els.walkTarget.textContent="Target: "+ctx.target.walkMin+" min";els.walkSessTarget.textContent="Target: "+ctx.target.walkSess;els.strengthTarget.textContent="Target: "+ctx.target.strength;els.condTarget.textContent="Target: "+ctx.target.cond;els.mobTarget.textContent="Target: "+ctx.target.mob;if(num(latest.pain)>=6)alertBox(els.weekStatus,"Latest pain is high. Reduce next session volume or intensity.","bad");else els.weekStatus.classList.add("hidden");renderCumulative();drawWeeklyChart();}
-function weekTotals(week){let walkMin=0,walkSess=0,condSess=0,mobDays=0;Object.values(state.dayLogs||{}).forEach(l=>{if(calcContext(l.date).week!==week)return;const wm=num(l.walkingMin),cm=num(l.conditioningMin),mm=num(l.mobilityMin);walkMin+=wm;if(wm>0)walkSess++;if(cm>0||taskKindDone(l,"conditioning"))condSess++;if(mm>0||taskKindDone(l,"mobility"))mobDays++;});const strengthSess=new Set((state.strength||[]).filter(s=>Number(s.week)===Number(week)).map(s=>s.date+"-"+s.session)).size;return{walkMin,walkSess,strengthSess,condSess,mobDays};}
-function latestMetrics(week){const logs=Object.values(state.dayLogs||{}).filter(l=>calcContext(l.date).week===week).sort((a,b)=>String(b.date).localeCompare(String(a.date)));const find=f=>{const x=logs.find(l=>l[f]!==""&&l[f]!=null);return x?x[f]:"";};const sunday=state.startDate?getDayLog(serialToDate(dateSerial(state.startDate)+(Number(week)-1)*7+6)):{};return{pain:find("pain"),weight:show(sunday.weight),waist:show(sunday.waist)};}
-function renderCumulative(){const weeks=[];for(let w=1;w<=ctx.week;w++)weeks.push(weekTotals(w));const totalWalk=weeks.reduce((a,x)=>a+x.walkMin,0),totalStrength=(state.strength||[]).length,totalCond=weeks.reduce((a,x)=>a+x.condSess,0),totalMob=weeks.reduce((a,x)=>a+x.mobDays,0);els.cumulative.innerHTML='<div class="soft"><b>Total walking</b><br>'+Math.round(totalWalk)+' min</div><div class="soft"><b>Strength sessions saved</b><br>'+totalStrength+'</div><div class="soft"><b>Conditioning sessions</b><br>'+totalCond+'</div><div class="soft"><b>Mobility days</b><br>'+totalMob+'</div>';}
-function drawWeeklyChart(){const rows=[];for(let w=Math.max(1,ctx.week-15);w<=ctx.week;w++){const t=weekTotals(w),p=getTarget(getPhase(w),w);rows.push({week:w,walk:t.walkMin,target:p.walkMin,strength:t.strengthSess});}drawLineBars(els.weeklyChart,rows);}
-function history(){const logs=Object.values(state.dayLogs||{}).sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,5),s=(state.strength||[]).slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,6);let html="";html+=logs.map(x=>{const c=calcContext(x.date),body=(c.dayIndex===6&&(x.weight||x.waist))?', Sunday weight '+show(x.weight)+' kg, waist '+show(x.waist)+' cm':'';return '<div class="soft"><b>'+esc(formatDate(x.date))+'</b><br>Walk '+show(x.walkingMin)+' min, mobility '+show(x.mobilityMin)+' min, conditioning '+show(x.conditioningMin)+' min, pain '+show(x.pain)+body+'</div>';}).join("");html+=s.map(x=>'<div class="soft"><b>'+esc(formatDate(x.date))+' - Strength '+esc(x.session)+'</b><br>Week '+x.week+', sets '+(x.sets||[]).length+', RPE '+show(x.rpe)+' <button class="small ghost" data-del="'+escA(x.id)+'">Delete</button></div>').join("");els.hist.innerHTML=html||'<p class="muted">No saved progress yet.</p>';els.hist.querySelectorAll("button[data-del]").forEach(b=>b.onclick=()=>{if(confirm("Delete this strength session?")){state.strength=state.strength.filter(s=>s.id!==b.dataset.del);save(true);render();}});}
-function chartOptions(){const names=[...new Set((state.strength||[]).flatMap(s=>(s.sets||[]).map(x=>x.exercise)))].sort(),old=els.chartEx.value;els.chartEx.innerHTML=names.length?names.map(n=>'<option>'+esc(n)+'</option>').join(""):'<option>No logged exercises</option>';if(names.includes(old))els.chartEx.value=old;drawExerciseChart();}
-function drawExerciseChart(){const name=els.chartEx.value,rows=(state.strength||[]).map(s=>{const sets=(s.sets||[]).filter(x=>x.exercise===name);if(!sets.length)return null;return{date:s.date,session:s.session,bestW:max(sets.map(x=>num(x.actualWeight))),bestV:max(sets.map(x=>num(x.actualValue))),vol:sets.reduce((a,x)=>a+(num(x.actualWeight)||1)*num(x.actualValue),0),rpe:max(sets.map(x=>num(x.rpe)))}}).filter(Boolean).sort((a,b)=>String(a.date).localeCompare(String(b.date)));drawExerciseLine(els.chart,rows);els.exTable.innerHTML=rows.length?'<table><thead><tr><th>Date</th><th>Session</th><th>Best kg</th><th>Best reps/sec</th><th>Volume</th><th>Top RPE</th></tr></thead><tbody>'+rows.slice(-12).reverse().map(r=>'<tr><td>'+formatDate(r.date)+'</td><td>'+r.session+'</td><td>'+show(r.bestW)+'</td><td>'+show(r.bestV)+'</td><td>'+Math.round(r.vol)+'</td><td>'+show(r.rpe)+'</td></tr>').join("")+'</tbody></table>':"";}
-function drawExerciseLine(canvas,rows){const ctx2=canvas.getContext("2d"),w=canvas.width,h=canvas.height,p=34;ctx2.clearRect(0,0,w,h);ctx2.font="13px Arial";ctx2.fillStyle="#5b675c";if(!rows.length){ctx2.fillText("No exercise data yet.",20,30);return;}const vals=rows.map(r=>r.bestW||r.bestV||0),mx=Math.max(1,...vals);axis(ctx2,w,h,p,"Best load kg, or reps/sec if bodyweight");ctx2.strokeStyle="#2f6f46";ctx2.lineWidth=3;ctx2.beginPath();vals.forEach((v,i)=>{const x=p+(w-p*2)*(rows.length===1?0:i/(rows.length-1)),y=h-p-(h-p*2)*(v/mx);if(i)ctx2.lineTo(x,y);else ctx2.moveTo(x,y);});ctx2.stroke();ctx2.fillStyle="#2f6f46";vals.forEach((v,i)=>{const x=p+(w-p*2)*(rows.length===1?0:i/(rows.length-1)),y=h-p-(h-p*2)*(v/mx);ctx2.beginPath();ctx2.arc(x,y,4,0,Math.PI*2);ctx2.fill();});}
-function drawLineBars(canvas,rows){const ctx2=canvas.getContext("2d"),w=canvas.width,h=canvas.height,p=34;ctx2.clearRect(0,0,w,h);ctx2.font="13px Arial";ctx2.fillStyle="#5b675c";if(!rows.length){ctx2.fillText("No weekly data yet.",20,30);return;}axis(ctx2,w,h,p,"Weekly walking minutes and strength sessions");const mx=Math.max(1,...rows.map(r=>Math.max(r.walk,r.target)));rows.forEach((r,i)=>{const x=p+(w-p*2)*(i/(Math.max(1,rows.length-1))),bw=Math.max(5,(w-p*2)/Math.max(6,rows.length)/2),bh=(h-p*2)*(r.walk/mx);ctx2.fillStyle="#2f6f46";ctx2.fillRect(x-bw/2,h-p-bh,bw,bh);ctx2.fillStyle="#5b675c";if(i%2===0)ctx2.fillText(String(r.week),x-5,h-8);});ctx2.strokeStyle="#8a5a00";ctx2.lineWidth=2;ctx2.beginPath();rows.forEach((r,i)=>{const x=p+(w-p*2)*(i/(Math.max(1,rows.length-1))),y=h-p-(h-p*2)*(r.target/mx);if(i)ctx2.lineTo(x,y);else ctx2.moveTo(x,y);});ctx2.stroke();}
-function axis(ctx2,w,h,p,title){ctx2.strokeStyle="#dfe5df";ctx2.lineWidth=1;ctx2.beginPath();ctx2.moveTo(p,p);ctx2.lineTo(p,h-p);ctx2.lineTo(w-p,h-p);ctx2.stroke();ctx2.fillText(title,p,18);}
-async function connectSync(){try{const url=els.url.value.trim(),key=els.key.value.trim(),phrase=els.phrase.value;if(!url||!key||phrase.length<16){syncMsg("Enter Supabase URL, key and a private phrase of at least 16 characters.","bad");return;}const sid=await sha("reconditioning-sync-id:"+phrase),secret=await sha("reconditioning-sync-secret:"+phrase);state.sync={on:true,url,key,id:sid,secret,device:els.dev.value.trim()||guessDevice(),pulled:state.sync.pulled||"",pushed:state.sync.pushed||""};save(false);await syncNow(true);syncUi();}catch(e){syncMsg("Sync connection failed: "+err(e),"bad");}}
-async function syncNow(force){if(!state.sync.on)return;if(syncing){pendingSync=true;return;}if(!navigator.onLine&&!force)return;try{syncing=true;syncUi("syncing");saveDraftLocal();const client=getClient();const pull=await client.rpc("reconditioning_pull",{p_sync_id:state.sync.id,p_secret:state.sync.secret});if(pull.error)throw pull.error;const remote=(pull.data&&pull.data[0]&&pull.data[0].profile_exists)?pull.data[0].data:null;if(remote){const sync=state.sync;state=merge(state,remote);state.sync=sync;norm();}
-const payload=cloud();const push=await client.rpc("reconditioning_push",{p_sync_id:state.sync.id,p_secret:state.sync.secret,p_data:payload,p_client_updated_at:state.updatedAt||iso(),p_device_name:state.sync.device||guessDevice()});if(push.error)throw push.error;if(push.data&&push.data[0]&&push.data[0].data){const sync=state.sync;state=merge(state,push.data[0].data);state.sync=sync;state.sync.pulled=iso();state.sync.pushed=iso();norm();}save(false);syncMsg("Synced "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}),"ok");if(!isEditingStrength())render();else renderQueued=true;}catch(e){syncMsg("Using local data. Sync failed: "+err(e),"bad");}finally{syncing=false;syncUi();if(pendingSync){pendingSync=false;scheduleSync();}}}
-function scheduleSync(){if(!state.sync.on)return;clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncNow(false),SYNC_DELAY);}
-function getClient(){if(!supabaseClient||supabaseClient.supabaseUrl!==state.sync.url){supabaseClient=window.supabase.createClient(state.sync.url,state.sync.key);supabaseClient.supabaseUrl=state.sync.url;}return supabaseClient;}
-function syncUi(mode){els.url.value=state.sync.url||els.url.value||"";els.key.value=state.sync.key||els.key.value||"";els.dev.value=state.sync.device||els.dev.value||guessDevice();els.syncId.value=state.sync.id?state.sync.id.slice(0,12)+"...":"";els.syncNow.disabled=!state.sync.on;els.disc.disabled=!state.sync.on;els.connect.textContent=state.sync.on?"Reconnect sync":"Connect and sync";els.syncBadge.className="badge";els.syncBadge.textContent=mode==="syncing"?"Syncing":state.sync.on?"Auto-sync on":"Local only";}
-function disconnectSync(){if(!confirm("Disconnect sync on this device? Local data remains."))return;state.sync.on=false;state.sync.id="";state.sync.secret="";save(false);syncUi();syncMsg("Sync disconnected on this device.","bad");}
-function cloud(){return{schema:7,startDate:state.startDate,startUpdated:state.startUpdated,viewDate:state.viewDate,progress:state.progress,dayLogs:state.dayLogs,tasks:state.tasks,strength:state.strength,updatedAt:state.updatedAt||iso()};}
-function merge(a,b){const out=def();out.startDate=cmp(a.startUpdated,b.startUpdated)>=0?a.startDate:b.startDate;out.startUpdated=cmp(a.startUpdated,b.startUpdated)>=0?a.startUpdated:b.startUpdated;out.viewDate=a.viewDate||b.viewDate||today();out.progress=mergeObj(a.progress,b.progress);out.dayLogs=mergeObj(a.dayLogs,b.dayLogs);out.tasks=mergeTasks(a.tasks,b.tasks);out.strength=mergeArr(a.strength,b.strength);out.drafts=a.drafts||{};out.updatedAt=cmp(a.updatedAt,b.updatedAt)>=0?a.updatedAt:b.updatedAt;return out;}
-function mergeObj(a,b){const o=Object.assign({},a||{});Object.keys(b||{}).forEach(k=>{if(!o[k]||cmp(b[k].updated,o[k].updated)>0)o[k]=b[k];});return o;}
-function mergeTasks(a,b){const o=JSON.parse(JSON.stringify(a||{}));Object.keys(b||{}).forEach(w=>{o[w]=o[w]||{};Object.keys(b[w]||{}).forEach(t=>{if(!o[w][t]||cmp(b[w][t].updated,o[w][t].updated)>0)o[w][t]=b[w][t];});});return o;}
-function mergeArr(a,b){const m={};(a||[]).concat(b||[]).forEach(x=>{if(x&&x.id&&(!m[x.id]||cmp(x.updated,m[x.id].updated)>0))m[x.id]=x;});return Object.values(m).sort((x,y)=>String(x.date).localeCompare(String(y.date)));}
-function exportDaily(){const h=["date","week","phase","programme_day","walking_minutes","mobility_minutes","conditioning_minutes","pain","sunday_weight_kg","sunday_waist_cm","tasks_done","tasks_total","notes","updated"],rows=Object.values(state.dayLogs||{}).sort((a,b)=>String(a.date).localeCompare(String(b.date))).map(l=>{const c=calcContext(l.date),p=dayPlan(c),done=completion(l.date,p),isSun=c.dayIndex===6;return[l.date,c.week,c.phase.name,c.programmeDay,l.walkingMin,l.mobilityMin,l.conditioningMin,l.pain,isSun?l.weight:"",isSun?l.waist:"",done.done,done.total,l.notes,l.updated].map(csv).join(",");});download("daily-progress.csv",h.join(",")+"\n"+rows.join("\n"),"text/csv");}
-function exportStrength(){const h=["session_id","date","week","phase","session","exercise","type","set","target_weight","actual_weight","target_reps_or_seconds","actual_reps_or_seconds","unit","rpe","session_rpe","notes","updated"],rows=[];(state.strength||[]).forEach(s=>(s.sets||[]).forEach(x=>rows.push([s.id,s.date,s.week,s.phase,s.session,x.exercise,x.type,x.set,x.targetWeight,x.actualWeight,x.targetValue,x.actualValue,x.unit,x.rpe,s.rpe,s.notes,s.updated].map(csv).join(","))));download("strength-sessions.csv",h.join(",")+"\n"+rows.join("\n"),"text/csv");}
-function exportJson(){download("reconditioning-backup.json",JSON.stringify(cloud(),null,2),"application/json");}
-function importJson(e){const f=e.target.files&&e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const sync=state.sync;state=merge(state,JSON.parse(rd.result));state.sync=sync;norm();save(true);render();syncMsg("JSON imported and merged.","ok");}catch(x){syncMsg("Import failed: "+err(x),"bad");}e.target.value="";};rd.readAsText(f);}
-function resetLocal(){if(confirm("Reset local data on this device? Cloud data is not deleted.")){const sync=state.sync;state=def();state.sync=sync;state.viewDate=today();save(true);render();}}
-function getDayLog(dateStr){state.dayLogs=state.dayLogs||{};return Object.assign({date:dateStr,walkingMin:"",mobilityMin:"",conditioningMin:"",pain:"",weight:"",waist:"",notes:"",tasks:{},updated:""},state.dayLogs[dateStr]||{});}
-function taskDone(dateStr,id){const l=getDayLog(dateStr);return !!(l.tasks&&l.tasks[id]&&l.tasks[id].checked);}
-function completion(dateStr,p){const total=p.items.length,done=p.items.filter(x=>taskDone(dateStr,x.id)).length;return{done,total};}
-function taskKindDone(log,kind){const c=calcContext(log.date),p=dayPlan(c);return p.items.some(x=>x.kind===kind&&log.tasks&&log.tasks[x.id]&&log.tasks[x.id].checked);}
-function suggestSession(){if(!ctx)return"A";const p=dayPlan(ctx),s=p.items.find(x=>x.kind==="strength"&&ctx.phase.strength[x.session]);return s?s.session:Object.keys(ctx.phase.strength)[0];}
-function findPlan(s,e,phase){return((phase||ctx.phase).strength[s]||[]).find(r=>r.name===e);}
-function lastFor(n){return(state.strength||[]).filter(s=>(s.sets||[]).some(x=>x.exercise===n)).sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];}
-function incLoad(r){return["Squat","Hinge","Hip thrust","Calf"].includes(r.type)?5:2.5;}
-function getPhase(w){return phases.find(p=>w>=p.weeks[0]&&w<=p.weeks[1])||phases[phases.length-1];}
-function getTarget(p,w){const a=p.targets[w]||p.defaultTarget;return{walkMin:a[0],walkSess:a[1],strength:a[2],cond:a[3],mob:a[4],text:a[5]};}
-function def(){return{schema:7,startDate:"",startUpdated:"",viewDate:"",progress:{},dayLogs:{},tasks:{},strength:[],drafts:{},sync:{on:false,url:"",key:"",id:"",secret:"",device:"",pulled:"",pushed:""},updatedAt:""};}
-function load(){let data=null;try{data=JSON.parse(localStorage.getItem(K)||"null");}catch(e){}if(!data){for(const k of OLD_KEYS){try{data=JSON.parse(localStorage.getItem(k)||"null");if(data)break;}catch(e){}}}return Object.assign(def(),data||{});}
-function norm(){state.progress=state.progress||{};state.dayLogs=state.dayLogs||{};state.tasks=state.tasks||{};state.strength=Array.isArray(state.strength)?state.strength:[];state.drafts=state.drafts||{};state.sync=Object.assign(def().sync,state.sync||{});state.viewDate=state.viewDate||today();state.updatedAt=state.updatedAt||iso();migrateWeeklyProgress();migrateBodyMetricsToSunday();}
-function migrateWeeklyProgress(){if(!state.startDate||Object.keys(state.dayLogs||{}).length)return;Object.values(state.progress||{}).forEach(p=>{if(!p||!p.week)return;const date=serialToDate(dateSerial(state.startDate)+(Number(p.week)-1)*7+6);state.dayLogs[date]={date:date,walkingMin:show(p.walkMin),mobilityMin:p.mobDays?String(Number(p.mobDays)*10):"",conditioningMin:p.condSess?String(Number(p.condSess)*20):"",pain:show(p.pain),weight:show(p.weight),waist:show(p.waist),notes:p.notes||"Migrated from previous weekly tracker.",tasks:{},updated:p.updated||iso()};});}
-function migrateBodyMetricsToSunday(){if(!state.startDate)return;Object.keys(state.dayLogs||{}).forEach(ds=>{const log=state.dayLogs[ds];if(!log)return;const hasWeight=log.weight!==""&&log.weight!=null,hasWaist=log.waist!==""&&log.waist!=null;if(!hasWeight&&!hasWaist)return;const c=calcContext(ds);if(c.dayIndex===6)return;const sundayDate=serialToDate(dateSerial(state.startDate)+(c.week-1)*7+6),sun=getDayLog(sundayDate);let moved=false;if(hasWeight&&(sun.weight===""||sun.weight==null||cmp(log.updated,sun.updated)>0)){sun.weight=log.weight;moved=true;}if(hasWaist&&(sun.waist===""||sun.waist==null||cmp(log.updated,sun.updated)>0)){sun.waist=log.waist;moved=true;}if(moved){sun.updated=iso();state.dayLogs[sundayDate]=sun;}log.weight="";log.waist="";log.updated=log.updated||iso();state.dayLogs[ds]=log;});}
-function save(doSync){state.updatedAt=iso();localStorage.setItem(K,JSON.stringify(state));if(doSync)scheduleSync();}
-function isEditingStrength(){const a=document.activeElement;return !!(a&&(els.sLog.contains(a)||a===els.sRpe||a===els.sNotes));}
-function has(o,k){return Object.prototype.hasOwnProperty.call(o,k);}
-function sha(t){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(t)).then(b=>Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join(""));}
-function cmp(a,b){const x=Date.parse(a||"")||0,y=Date.parse(b||"")||0;return x===y?0:x>y?1:-1;}
-function alertBox(el,m,k){el.textContent=m;el.classList.remove("hidden","bad","ok");if(k==="bad")el.classList.add("bad");if(k==="ok")el.classList.add("ok");}
-function syncMsg(m,k){alertBox(els.syncStatus,m,k);}
-function err(e){return e&&(e.message||e.details||e.hint)||String(e);}
-function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
-function dateSerial(v){const p=String(v||today()).split("-").map(Number);return Math.floor(Date.UTC(p[0],p[1]-1,p[2])/86400000);}
-function serialToDate(s){const d=new Date(s*86400000);return d.getUTCFullYear()+"-"+String(d.getUTCMonth()+1).padStart(2,"0")+"-"+String(d.getUTCDate()).padStart(2,"0");}
-function formatDate(s){const p=String(s).split("-");return p.length===3?p[2]+"/"+p[1]+"/"+p[0]:s;}
-function iso(){return new Date().toISOString();}
-function id(){return"s-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,9);}
-function num(v){const n=Number(String(v).trim());return Number.isFinite(n)?n:0;}
-function numOrBlank(v){if(v===""||v==null)return"";const n=Number(String(v).trim());return Number.isFinite(n)?n:"";}
-function bar(el,val,t){el.style.width=(t?Math.max(0,Math.min(100,Math.round(num(val)/t*100))):0)+"%";}
-function max(a){const b=a.filter(x=>Number.isFinite(x)&&x>0);return b.length?Math.max(...b):0;}
-function unit(r){return r.unit==="seconds"?"sec":"reps";}
-function range(r){return r.repsMin===r.repsMax?r.repsMin+" "+unit(r):r.repsMin+" to "+r.repsMax+" "+unit(r);}
-function sets(r){return r.setsMin===r.setsMax?String(r.setsMin):r.setsMin+" to "+r.setsMax;}
-function draftKey(){return(els.sDate.value||state.viewDate)+"-"+(els.sName.value||"A");}
-function show(v){return v===""||v==null?"":String(v);}
-function csv(v){return '"'+show(v).replace(/"/g,'""')+'"';}
-function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
-function escA(s){return esc(s);}
-function download(fn,text,type){const b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(u);}
-function guessDevice(){return/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)?"Mobile":"Laptop";}
-})();});
-</script>
-</body>
+      * {
+        box-sizing: border-box
+      }
+
+      html {
+        scroll-behavior: smooth
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.45
+      }
+
+      header {
+        background: linear-gradient(135deg, #1f4f34, #4f7f5c);
+        color: #fff;
+        padding: 28px 18px 32px
+      }
+
+      .wrap {
+        max-width: 1260px;
+        margin: 0 auto
+      }
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        margin: 0
+      }
+
+      h1 {
+        font-size: clamp(1.9rem, 4vw, 3rem);
+        letter-spacing: -.04em;
+        line-height: 1.05
+      }
+
+      h2 {
+        font-size: 1.32rem
+      }
+
+      h3 {
+        font-size: 1.08rem
+      }
+
+      .sub {
+        max-width: 960px;
+        color: rgba(255, 255, 255, .9)
+      }
+
+      main {
+        padding: 20px 18px 50px
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1.1fr .9fr;
+        gap: 18px
+      }
+
+      .main-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.12fr) minmax(340px, .88fr);
+        gap: 18px;
+        align-items: start;
+        margin-top: 18px
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        padding: 18px
+      }
+
+      .stack {
+        display: grid;
+        gap: 14px
+      }
+
+      .soft {
+        background: var(--soft);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px;
+        margin-top: 10px
+      }
+
+      .muted {
+        color: var(--muted)
+      }
+
+      .tiny {
+        font-size: .82rem
+      }
+
+      .big {
+        font-size: clamp(2rem, 5vw, 3.4rem);
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: -.05em
+      }
+
+      .badge,
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-weight: 800
+      }
+
+      .badge {
+        background: #dceadd;
+        color: var(--accent)
+      }
+
+      .pill {
+        background: #fff;
+        border: 1px solid var(--line);
+        font-size: .86rem;
+        margin: 4px 6px 0 0
+      }
+
+      .pill.done {
+        background: #dceadd;
+        color: var(--ok);
+        border-color: #b7d7bc
+      }
+
+      label {
+        display: block;
+        font-size: .84rem;
+        color: var(--muted);
+        font-weight: 700;
+        margin-bottom: 6px
+      }
+
+      input,
+      select,
+      textarea,
+      button {
+        font: inherit
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: #fff;
+        color: var(--text)
+      }
+
+      input[readonly] {
+        background: #eef1ee;
+        color: #59635b;
+        border-style: dashed
+      }
+
+      textarea {
+        min-height: 74px;
+        resize: vertical
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 14px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer
+      }
+
+      button.secondary {
+        background: #fff;
+        color: var(--accent);
+        border: 1px solid var(--accent)
+      }
+
+      button.ghost {
+        background: transparent;
+        color: var(--accent);
+        border: 1px solid var(--line)
+      }
+
+      button.danger {
+        background: var(--danger)
+      }
+
+      button.small {
+        font-size: .84rem;
+        padding: 6px 10px
+      }
+
+      .form {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px
+      }
+
+      .form3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px
+      }
+
+      .form4 {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px
+      }
+
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center
+      }
+
+      .task {
+        display: grid;
+        grid-template-columns: 28px 1fr;
+        gap: 10px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px;
+        margin-top: 10px;
+        background: #fff
+      }
+
+      .task input {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--accent)
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid var(--line);
+        padding: 9px;
+        text-align: left;
+        vertical-align: top
+      }
+
+      th {
+        font-size: .82rem;
+        color: var(--muted);
+        background: #f7faf7
+      }
+
+      .scroll {
+        overflow-x: auto
+      }
+
+      .metric {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px;
+        background: #fff
+      }
+
+      .bar {
+        height: 9px;
+        background: #e9eee9;
+        border-radius: 999px;
+        overflow: hidden;
+        margin-top: 8px
+      }
+
+      .bar span {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: var(--accent)
+      }
+
+      .alert {
+        margin-top: 12px;
+        border-radius: 14px;
+        padding: 12px;
+        background: #fff4d7;
+        color: var(--warn);
+        border: 1px solid #f0d58c
+      }
+
+      .bad {
+        background: #ffe5e5;
+        color: var(--danger);
+        border-color: #f0b4b4
+      }
+
+      .ok {
+        background: #dceadd;
+        color: var(--ok);
+        border-color: #b7d7bc
+      }
+
+      .hidden {
+        display: none !important
+      }
+
+      .week-days {
+        display: grid;
+        gap: 12px
+      }
+
+      .day-card {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #fff;
+        padding: 14px
+      }
+
+      .day-card.selected {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(47, 111, 70, .13)
+      }
+
+      .day-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        flex-wrap: wrap
+      }
+
+      .day-title {
+        font-size: 1.05rem;
+        font-weight: 900
+      }
+
+      .day-plan {
+        display: grid;
+        gap: 8px;
+        margin-top: 10px
+      }
+
+      .plan-item {
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        background: var(--soft2);
+        padding: 10px
+      }
+
+      .plan-item strong {
+        display: block
+      }
+
+      .daily-log {
+        margin-top: 12px;
+        border-top: 1px solid var(--line);
+        padding-top: 12px
+      }
+
+      .exercise {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 12px;
+        margin-top: 12px;
+        background: #fff
+      }
+
+      .exercise-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: flex-start;
+        flex-wrap: wrap
+      }
+
+      .setgrid {
+        display: grid;
+        grid-template-columns: 60px repeat(5, 1fr);
+        gap: 8px;
+        align-items: end;
+        margin-top: 8px
+      }
+
+      .chart {
+        height: 240px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fff;
+        padding: 10px;
+        margin-top: 12px
+      }
+
+      canvas {
+        width: 100%;
+        height: 100%;
+        display: block
+      }
+
+      .footer {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: .84rem
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px
+      }
+
+      .tabs a {
+        display: inline-block;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 12px;
+        text-decoration: none;
+        color: var(--accent);
+        background: #fff;
+        font-weight: 700
+      }
+
+      .weekly-strip {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+        margin-top: 12px
+      }
+
+      .mini-day {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 14px;
+        padding: 10px;
+        min-height: 78px
+      }
+
+      .mini-day b {
+        display: block
+      }
+
+      .mini-day.today {
+        border-color: var(--accent);
+        background: #eef7ef
+      }
+
+      .mini-day small {
+        display: block;
+        color: var(--muted)
+      }
+
+      @media(max-width:980px) {
+
+        .grid,
+        .main-grid,
+        .form,
+        .form3,
+        .form4 {
+          grid-template-columns: 1fr
+        }
+
+        .setgrid {
+          grid-template-columns: 1fr 1fr
+        }
+
+        .setgrid b {
+          grid-column: 1/-1
+        }
+
+        .side {
+          order: -1
+        }
+
+        .weekly-strip {
+          grid-template-columns: 1fr 1fr
+        }
+
+        .day-head {
+          display: block
+        }
+      }
+
+      @media print {
+
+        header,
+        .settings,
+        .sync,
+        .side,
+        .logger,
+        button,
+        .tabs {
+          display: none !important
+        }
+
+        main {
+          padding: 0
+        }
+
+        .grid,
+        .main-grid {
+          display: block
+        }
+
+        .card {
+          box-shadow: none;
+          border: 1px solid #bbb;
+          margin-bottom: 12px
+        }
+
+        .day-card {
+          break-inside: avoid
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="wrap">
+        <h1>Reconditioning Programme Tracker</h1>
+        <p class="sub">Daily plan, weekly goalposts, strength progression, walking, mobility, conditioning and Supabase
+          sync between devices.</p>
+      </div>
+    </header>
+    <main>
+      <div class="wrap">
+        <section class="grid">
+          <div class="card settings">
+            <h2>Programme settings</h2>
+            <p class="muted">Set the programme start date. Week 1 day 1 is the start date, then the app generates each
+              day from the programme.</p>
+            <div class="form" style="margin-top:12px">
+              <div><label>Programme start date</label><input id="startDate" type="date"></div>
+              <div><label>Date to view</label><input id="viewDate" type="date"></div>
+            </div>
+            <div class="row" style="margin-top:12px"><button id="saveDates">Save dates</button><button class="secondary"
+                id="todayBtn">Today</button><button class="ghost" id="prevWeek">Previous week</button><button
+                class="ghost" id="nextWeek">Next week</button><button class="ghost" id="printBtn">Print week</button>
+            </div>
+          </div>
+          <div class="card">
+            <div id="phaseBadge" class="badge">Phase</div>
+            <div id="weekNo" class="big">Week 1</div>
+            <p id="phaseSummary" class="muted">Set a start date.</p>
+            <div id="pills"></div>
+          </div>
+        </section>
+        <section class="main-grid">
+          <div class="stack">
+            <div class="card">
+              <h2>This week's focus</h2>
+              <p id="focus" class="muted"></p>
+              <div id="goals"></div>
+              <div id="weekStrip" class="weekly-strip"></div>
+            </div>
+            <div class="card">
+              <div class="row" style="justify-content:space-between">
+                <div>
+                  <h2>Selected day</h2>
+                  <p id="todayIntro" class="muted"></p>
+                </div><span id="dayStatus" class="badge">Not logged</span>
+              </div>
+              <div id="todayTasks"></div>
+            </div>
+            <div class="card">
+              <div class="row" style="justify-content:space-between">
+                <div>
+                  <h2>Full week plan</h2>
+                  <p class="muted">Scroll each day. The current day is highlighted and each card contains its own plan
+                    and tracking.</p>
+                </div>
+                <div class="tabs" id="dayJump"></div>
+              </div>
+              <div id="weekPlan" class="week-days"></div>
+            </div>
+            <div class="card logger">
+              <h2>Log strength session</h2>
+              <p class="muted">Targets are read-only suggestions from the plan and previous logs. Enter what was
+                actually done. Added sets are kept and synced.</p>
+              <div class="form3" style="margin-top:12px">
+                <div><label>Session date</label><input id="strengthDate" type="date"></div>
+                <div><label>Session</label><select id="sessionName"></select></div>
+                <div><label>Session RPE</label><input id="sessionRpe" type="text" inputmode="decimal"
+                    autocomplete="off"></div>
+              </div>
+              <div id="strengthLogger"></div><label style="margin-top:12px">Session notes</label><textarea
+                id="strengthNotes" placeholder="Pain, form, fatigue, changes"></textarea>
+              <div class="row" style="margin-top:12px"><button id="saveStrength">Save strength session</button><button
+                  id="clearDraft" class="ghost">Clear draft</button></div>
+              <div id="strengthStatus" class="alert hidden"></div>
+            </div>
+            <div class="card">
+              <h2>Strength exercises for this phase</h2>
+              <p id="strengthIntro" class="muted"></p>
+              <div id="strengthTables"></div>
+            </div>
+            <div class="card">
+              <h2>Walking, conditioning and mobility details</h2>
+              <div id="walking"></div>
+              <div id="conditioning"></div>
+            </div>
+          </div>
+          <aside class="stack side">
+            <div class="card">
+              <h2>Weekly totals</h2>
+              <p class="muted">These are calculated from daily logs and saved strength sessions. Weight and waist are
+                logged once weekly on Sunday, because daily scale drama is not the programme.</p>
+              <div class="stack" style="margin-top:12px">
+                <div class="metric"><label>Walking minutes</label><input id="walkMin" type="text" readonly>
+                  <div class="bar"><span id="walkBar"></span></div><small id="walkTarget" class="muted"></small>
+                </div>
+                <div class="metric"><label>Walking sessions</label><input id="walkSess" type="text" readonly>
+                  <div class="bar"><span id="walkSessBar"></span></div><small id="walkSessTarget" class="muted"></small>
+                </div>
+                <div class="metric"><label>Strength sessions</label><input id="strengthSess" type="text" readonly>
+                  <div class="bar"><span id="strengthBar"></span></div><small id="strengthTarget" class="muted"></small>
+                </div>
+                <div class="metric"><label>Conditioning sessions</label><input id="condSess" type="text" readonly>
+                  <div class="bar"><span id="condBar"></span></div><small id="condTarget" class="muted"></small>
+                </div>
+                <div class="metric"><label>Mobility days</label><input id="mobDays" type="text" readonly>
+                  <div class="bar"><span id="mobBar"></span></div><small id="mobTarget" class="muted"></small>
+                </div>
+                <div class="metric"><label>Latest pain 0 to 10</label><input id="pain" type="text" readonly></div>
+                <div class="metric"><label>Sunday weight kg</label><input id="weight" type="text" readonly></div>
+                <div class="metric"><label>Sunday waist cm</label><input id="waist" type="text" readonly></div>
+              </div>
+              <div id="weekStatus" class="alert hidden"></div>
+            </div>
+            <div class="card">
+              <h2>Cumulative progress</h2>
+              <div id="cumulative"></div>
+              <div class="chart"><canvas id="weeklyChart" width="700" height="240"></canvas></div>
+            </div>
+            <div class="card">
+              <h2>Exercise progress</h2><label>Exercise</label><select id="chartExercise"></select>
+              <div class="chart"><canvas id="exerciseChart" width="700" height="240"></canvas></div>
+              <div id="exerciseTable"></div>
+            </div>
+            <div class="card">
+              <h2>History and export</h2>
+              <div class="row"><button class="secondary" id="exportDaily">Export daily CSV</button><button
+                  class="secondary" id="exportStrength">Export strength CSV</button><button class="secondary"
+                  id="exportJson">Export JSON</button></div><label class="row" style="margin-top:12px"><span
+                  class="pill">Import JSON backup</span><input id="importJson" type="file" accept="application/json"
+                  class="hidden"></label><button class="danger" id="resetLocal" style="margin-top:12px">Reset local
+                data</button>
+              <div id="history"></div>
+            </div>
+          </aside>
+        </section>
+        <section class="card sync" style="margin-top:18px">
+          <div class="row" style="justify-content:space-between">
+            <div>
+              <h2>Supabase sync</h2>
+              <p class="muted">Use the same URL, publishable or anon key and private phrase on both devices.</p>
+            </div><span id="syncBadge" class="badge">Local only</span>
+          </div>
+          <div class="form3" style="margin-top:12px">
+            <div><label>Supabase URL</label><input id="supabaseUrl" placeholder="https://your-project.supabase.co">
+            </div>
+            <div><label>Publishable or anon key</label><input id="supabaseKey" type="password"
+                placeholder="sb_publishable_... or eyJ..."></div>
+            <div><label>Device name</label><input id="deviceName" placeholder="Laptop or phone"></div>
+          </div>
+          <div class="form" style="margin-top:12px">
+            <div><label>Private sync phrase</label><input id="syncPhrase" type="password"
+                placeholder="Minimum 16 characters">
+            </div>
+            <div><label>Derived sync ID</label><input id="syncId" readonly placeholder="Created on connect"></div>
+          </div>
+          <div class="row" style="margin-top:12px"><button id="connectSync">Connect and sync</button><button
+              class="secondary" id="syncNow">Sync now</button><button class="ghost"
+              id="disconnectSync">Disconnect</button></div>
+          <div id="syncStatus" class="alert hidden"></div>
+        </section>
+
+        <div class="footer">Private static tracker. Data is stored locally first and synced to Supabase only when sync
+          is connected.</div>
+      </div>
+    </main>
+    <script>
+      window.addEventListener( "DOMContentLoaded", function() {
+        ( function() {
+          "use strict"
+          const K="reconditioningProgrammeTracker.v7"
+          const OLD_KEYS=[ "reconditioningProgrammeTracker.v6", "reconditioningProgrammeTracker.v5" ]
+          const SYNC_DELAY=1200
+          const DAY_NAMES=[ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ]
+          const DAY_SHORT=[ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ]
+          function ex( n, t, s1, s2, r1, r2, note, u, rest ) { return { name: n, type: t, setsMin: s1, setsMax: s2, repsMin: r1, repsMax: r2, note: note||"", unit: u||"reps", rest: rest||"90 sec" } }
+          const mobilityFlow=[ "Breathing reset - 1 min", "Cat-cow - 8 to 10 reps", "Hip flexor stretch - 45 sec each side", "Hamstring flossing - 8 to 10 each side", "Calf mobility against wall - 45 sec each side", "Thoracic rotations - 8 each side", "Supported squat hold - 30 to 60 sec" ]
+          const phases=[
+            { id: 1, name: "Phase 1", label: "Weeks 1 to 4", weeks: [ 1, 4 ], summary: "Rebuild movement tolerance, walking capacity and conservative strength.", focus: "Make training repeatable. Keep leg symptoms controlled and avoid next-day flare-ups.", targets: { 1: [ 90, 10, 2, 0, 5, "Two walks daily, 8 to 12 min each." ], 2: [ 120, 10, 2, 0, 5, "Two walks daily, 10 to 15 min each, or one 20 min broken walk." ], 3: [ 150, 10, 3, 0, 6, "One to two walks daily, 15 to 20 min each as tolerated." ], 4: [ 175, 8, 3, 0, 6, "20 to 30 min total daily walking, broken if needed." ] }, goals: [ "5 to 6 walking days.", "2 to 3 strength sessions at RPE 5 to 6.", "10 min mobility most days.", "No gait-changing pain or 48 hour flare." ], intro: "Alternate A and B. Friday alternates A on odd weeks and B on even weeks.", strength: { A: [ ex( "Bench box squat or sit-to-stand", "Squat", 2, 3, 8, 10, "Bench height allows controlled reps without knee or calf flare.", "reps", "90 sec" ), ex( "Barbell Romanian deadlift", "Hinge", 2, 3, 8, 10, "Light load. Hips back, soft knees, neutral spine.", "reps", "90 sec" ), ex( "Barbell bench press or floor press", "Push", 2, 3, 8, 10, "Choose floor press if bench set-up feels unsafe.", "reps", "90 sec" ), ex( "Barbell row", "Pull", 2, 3, 8, 12, "Strict torso position.", "reps", "90 sec" ), ex( "Standing calf raise", "Calf", 2, 2, 10, 15, "Slow up and down. Stop before cramping.", "reps", "60 sec" ), ex( "Dead bug", "Core", 2, 2, 6, 10, "Each side. Exhale fully, ribs down.", "reps", "45 sec" ) ], B: [ ex( "Low step-up or supported split squat", "Single-leg", 2, 2, 6, 8, "Each side. Use a low step.", "reps", "90 sec" ), ex( "Glute bridge or barbell hip thrust", "Hip thrust", 2, 3, 10, 12, "Pause 1 sec at top.", "reps", "90 sec" ), ex( "Overhead press", "Push", 2, 2, 6, 10, "Light load, ribs down.", "reps", "90 sec" ), ex( "Barbell row", "Pull", 2, 3, 8, 12, "Controlled reps.", "reps", "90 sec" ), ex( "Loaded hold or farmer hold", "Carry", 2, 2, 20, 40, "Use any safe load.", "seconds", "60 sec" ), ex( "Side plank from knees", "Core", 2, 2, 15, 30, "Each side. Stop before form collapses.", "seconds", "45 sec" ) ] } },
+            { id: 2, name: "Phase 2", label: "Weeks 5 to 8", weeks: [ 5, 8 ], summary: "Build aerobic base, consistent full-body strength and first low-impact conditioning.", focus: "Reach consistent moderate activity volume while maintaining recovery.", targets: { 5: [ 175, 5, 3, 1, 5, "2 to 3 easy walks, one interval walk and one longer broken walk." ], 6: [ 190, 5, 3, 1, 5, "Easy walks 30 to 35 min, intervals 4 min brisk / 2 min easy." ], 7: [ 210, 5, 3, 1, 5, "Two interval walks if tolerated and a longer broken walk." ], 8: [ 220, 6, 3, 1, 5, "Five to six walks, including 5 min brisk / 90 sec easy intervals." ] }, goals: [ "150 to 220 weekly walking minutes.", "3 full-body strength sessions if recovery is good.", "One low-impact conditioning exposure.", "RPE mostly 6 to 7." ], intro: "Use three full-body sessions. Friday alternates A and B.", strength: { A: [ ex( "Bench box squat or box squat", "Squat", 3, 3, 8, 12, "RPE 6.", "reps", "90 sec" ), ex( "Barbell Romanian deadlift", "Hinge", 3, 3, 8, 10, "Clean hinge.", "reps", "120 sec" ), ex( "Bench press or floor press", "Push", 3, 3, 8, 12, "Controlled.", "reps", "90 sec" ), ex( "Barbell row", "Pull", 3, 3, 8, 12, "Strict reps.", "reps", "90 sec" ), ex( "Standing calf raise", "Calf", 3, 3, 10, 20, "Slow.", "reps", "60 sec" ), ex( "Dead bug", "Core", 3, 3, 8, 12, "Each side.", "reps", "45 sec" ) ], B: [ ex( "Step-up", "Single-leg", 3, 3, 8, 12, "Each side.", "reps", "90 sec" ), ex( "Barbell hip thrust", "Hip thrust", 3, 3, 8, 12, "Pause at top.", "reps", "90 sec" ), ex( "Overhead press", "Push", 3, 3, 6, 10, "Avoid lumbar extension.", "reps", "120 sec" ), ex( "Barbell row", "Pull", 3, 3, 8, 12, "Controlled.", "reps", "90 sec" ), ex( "Loaded hold", "Carry", 3, 3, 30, 45, "Brace and breathe.", "seconds", "60 sec" ), ex( "Side plank", "Core", 3, 3, 20, 40, "Each side.", "seconds", "45 sec" ) ] } },
+            { id: 3, name: "Phase 3", label: "Weeks 9 to 16", weeks: [ 9, 16 ], summary: "Consolidate fat-loss training with higher aerobic volume and controlled conditioning.", focus: "Build towards 240 to 300 min weekly aerobic work while protecting strength recovery.", targets: { 9: [ 240, 5, 3, 1, 5, "Five walks, 35 to 45 min." ], 10: [ 250, 5, 3, 1, 5, "Five walks, around 40 to 45 min." ], 11: [ 260, 5, 3, 1, 5, "Five walks plus short add-ons." ], 12: [ 270, 5, 3, 1, 5, "Include one brisk interval walk." ], 13: [ 280, 6, 3, 2, 5, "Six walks, add small incline blocks if stable." ], 14: [ 290, 6, 3, 2, 5, "Six walks, mixed easy and brisk pace." ], 15: [ 300, 6, 3, 2, 5, "Six walks, one long walk and one interval walk." ], 16: [ 300, 6, 3, 2, 5, "Six walks, aim for one 60 min walk with breaks." ] }, goals: [ "240 to 300 weekly aerobic minutes.", "3 strength sessions.", "1 to 2 conditioning sessions.", "Progress duration before incline, speed or load." ], intro: "Full-body sessions A, B and C. Sunday is strength C if recovery is good, otherwise recovery walk.", strength: { A: [ ex( "Box squat or squat to bench", "Squat", 3, 4, 6, 10, "Add reps until all sets hit 10, then add 2.5 to 5 kg.", "reps", "120 sec" ), ex( "Bench press", "Push", 3, 4, 6, 10, "Shoulder blades set, feet stable.", "reps", "120 sec" ), ex( "Barbell row", "Pull", 3, 4, 8, 12, "Strict reps.", "reps", "90 sec" ), ex( "Barbell Romanian deadlift", "Hinge", 2, 3, 8, 10, "Stop if back, not hamstrings, becomes limiting.", "reps", "120 sec" ), ex( "Standing calf raise", "Calf", 3, 3, 10, 20, "Full range.", "reps", "60 sec" ), ex( "Dead bug", "Core", 3, 3, 8, 12, "Each side.", "reps", "45 sec" ) ], B: [ ex( "Barbell Romanian deadlift", "Hinge", 3, 4, 6, 10, "Clean hinge.", "reps", "120 sec" ), ex( "Overhead press", "Push", 3, 3, 6, 10, "Avoid lumbar extension.", "reps", "120 sec" ), ex( "Step-up", "Single-leg", 3, 3, 8, 12, "Each side. Increase step height only after control is excellent.", "reps", "90 sec" ), ex( "Barbell row", "Pull", 3, 3, 8, 12, "Keep torso still.", "reps", "90 sec" ), ex( "Barbell hip thrust", "Hip thrust", 3, 3, 8, 12, "Pause at top.", "reps", "90 sec" ), ex( "Side plank", "Core", 3, 3, 20, 45, "Each side.", "seconds", "45 sec" ) ], C: [ ex( "Front-loaded squat variation or box squat", "Squat", 3, 3, 8, 12, "Progress depth slowly.", "reps", "120 sec" ), ex( "Floor press or bench press", "Push", 3, 3, 8, 12, "Keep 2 to 3 reps in reserve.", "reps", "90 sec" ), ex( "Supported split squat or reverse lunge", "Single-leg", 2, 3, 6, 10, "Each side. Start shallow and supported.", "reps", "90 sec" ), ex( "Barbell row", "Pull", 3, 3, 8, 12, "Controlled eccentric.", "reps", "90 sec" ), ex( "Standing calf raise slow eccentric", "Calf", 3, 3, 12, 20, "3 sec lowering phase.", "reps", "60 sec" ), ex( "Loaded hold", "Carry", 3, 3, 30, 60, "Brace and breathe.", "seconds", "60 sec" ) ] } },
+            { id: 4, name: "Phase 4", label: "Months 4 to 12", weeks: [ 17, 52 ], summary: "Sustain fat loss, restore robust recreational fitness and keep progressing.", focus: "Maintain 300 or more weekly aerobic minutes, 3 strength sessions and controlled conditioning.", defaultTarget: [ 320, 6, 3, 2, 5, "Six aerobic sessions including one longer walk and one brisk or incline session." ], targets: {}, goals: [ "300 to 420 weekly aerobic minutes.", "3 full-body strength sessions.", "1 to 2 boxing or conditioning sessions.", "Deload every 4 to 6 weeks if fatigue accumulates." ], intro: "Full-body sessions A, B and C. Sunday can be C or active recovery depending on fatigue.", strength: { A: [ ex( "Box squat or squat to bench", "Squat", 3, 4, 6, 10, "Add reps until all sets hit 10, then add 2.5 to 5 kg.", "reps", "120 sec" ), ex( "Bench press", "Push", 3, 4, 6, 10, "Shoulder blades set and feet stable.", "reps", "120 sec" ), ex( "Barbell row", "Pull", 3, 4, 8, 12, "Strict reps.", "reps", "90 sec" ), ex( "Barbell Romanian deadlift", "Hinge", 2, 3, 8, 10, "Clean hinge.", "reps", "120 sec" ), ex( "Standing calf raise", "Calf", 3, 3, 10, 20, "Full range.", "reps", "60 sec" ), ex( "Dead bug", "Core", 3, 3, 8, 12, "Each side.", "reps", "45 sec" ) ], B: [ ex( "Barbell Romanian deadlift", "Hinge", 3, 4, 6, 10, "Add load only while hinge remains clean.", "reps", "120 sec" ), ex( "Overhead press", "Push", 3, 3, 6, 10, "Avoid lumbar extension.", "reps", "120 sec" ), ex( "Step-up", "Single-leg", 3, 3, 8, 12, "Each side.", "reps", "90 sec" ), ex( "Barbell row", "Pull", 3, 3, 8, 12, "Keep torso still.", "reps", "90 sec" ), ex( "Barbell hip thrust", "Hip thrust", 3, 3, 8, 12, "Pause at top.", "reps", "90 sec" ), ex( "Side plank", "Core", 3, 3, 20, 45, "Each side.", "seconds", "45 sec" ) ], C: [ ex( "Front-loaded squat variation or box squat", "Squat", 3, 3, 8, 12, "Safe variation, progress depth slowly.", "reps", "120 sec" ), ex( "Floor press or bench press", "Push", 3, 3, 8, 12, "Keep 2 to 3 reps in reserve.", "reps", "90 sec" ), ex( "Supported split squat or reverse lunge", "Single-leg", 2, 3, 6, 10, "Each side.", "reps", "90 sec" ), ex( "Barbell row", "Pull", 3, 3, 8, 12, "Controlled eccentric.", "reps", "90 sec" ), ex( "Standing calf raise slow eccentric", "Calf", 3, 3, 12, 20, "3 sec lowering phase.", "reps", "60 sec" ), ex( "Loaded hold", "Carry", 3, 3, 30, 60, "Brace and breathe.", "seconds", "60 sec" ) ] } }
+          ]
+          const $=id => document.getElementById( id )
+          const els={ start: $( "startDate" ), view: $( "viewDate" ), saveDates: $( "saveDates" ), today: $( "todayBtn" ), prevWeek: $( "prevWeek" ), nextWeek: $( "nextWeek" ), print: $( "printBtn" ), phase: $( "phaseBadge" ), week: $( "weekNo" ), summary: $( "phaseSummary" ), pills: $( "pills" ), url: $( "supabaseUrl" ), key: $( "supabaseKey" ), dev: $( "deviceName" ), phrase: $( "syncPhrase" ), syncId: $( "syncId" ), connect: $( "connectSync" ), syncNow: $( "syncNow" ), disc: $( "disconnectSync" ), syncStatus: $( "syncStatus" ), syncBadge: $( "syncBadge" ), focus: $( "focus" ), goals: $( "goals" ), weekStrip: $( "weekStrip" ), todayIntro: $( "todayIntro" ), todayTasks: $( "todayTasks" ), dayStatus: $( "dayStatus" ), dayJump: $( "dayJump" ), weekPlan: $( "weekPlan" ), walking: $( "walking" ), conditioning: $( "conditioning" ), strengthIntro: $( "strengthIntro" ), strengthTables: $( "strengthTables" ), sDate: $( "strengthDate" ), sName: $( "sessionName" ), sRpe: $( "sessionRpe" ), sLog: $( "strengthLogger" ), sNotes: $( "strengthNotes" ), saveStrength: $( "saveStrength" ), clearDraft: $( "clearDraft" ), sStatus: $( "strengthStatus" ), walkMin: $( "walkMin" ), walkSess: $( "walkSess" ), strengthSess: $( "strengthSess" ), condSess: $( "condSess" ), mobDays: $( "mobDays" ), pain: $( "pain" ), weight: $( "weight" ), waist: $( "waist" ), walkBar: $( "walkBar" ), walkSessBar: $( "walkSessBar" ), strengthBar: $( "strengthBar" ), condBar: $( "condBar" ), mobBar: $( "mobBar" ), walkTarget: $( "walkTarget" ), walkSessTarget: $( "walkSessTarget" ), strengthTarget: $( "strengthTarget" ), condTarget: $( "condTarget" ), mobTarget: $( "mobTarget" ), weekStatus: $( "weekStatus" ), cumulative: $( "cumulative" ), weeklyChart: $( "weeklyChart" ), chartEx: $( "chartExercise" ), chart: $( "exerciseChart" ), exTable: $( "exerciseTable" ), exportDaily: $( "exportDaily" ), exportStrength: $( "exportStrength" ), exportJson: $( "exportJson" ), importJson: $( "importJson" ), reset: $( "resetLocal" ), hist: $( "history" ) }
+          let state=load(), ctx=null, supabaseClient=null, syncTimer=null, syncing=false, pendingSync=false, renderQueued=false
+          init()
+          function init() { norm(); els.start.value=state.startDate||""; els.view.value=state.viewDate||today(); els.sDate.value=els.view.value; els.url.value=state.sync.url||""; els.key.value=state.sync.key||""; els.dev.value=state.sync.device||guessDevice(); els.syncId.value=state.sync.id? state.sync.id.slice( 0, 12 )+"...":""; bind(); if( state.sync.on ) { syncNow( true ).then( () => render() ).catch( () => render() ) } else { render() } }
+          function bind() { els.saveDates.onclick=saveDates; els.today.onclick=() => { els.view.value=today(); saveDates() }; els.prevWeek.onclick=() => moveWeek( -1 ); els.nextWeek.onclick=() => moveWeek( 1 ); els.print.onclick=() => print();[ els.start, els.view ].forEach( e => e.onchange=saveDates ); els.sName.onchange=() => { saveDraftLocal(); renderLogger() }; els.sDate.onchange=() => { saveDraftLocal(); state.viewDate=els.sDate.value; els.view.value=els.sDate.value; save( false ); render() };[ els.sRpe, els.sNotes ].forEach( e => e.addEventListener( "input", saveDraftLocal ) ); els.saveStrength.onclick=saveStrength; els.clearDraft.onclick=() => { delete state.drafts[ draftKey() ]; save( true ); renderLogger() }; els.connect.onclick=connectSync; els.syncNow.onclick=() => syncNow( true ); els.disc.onclick=disconnectSync; els.exportDaily.onclick=exportDaily; els.exportStrength.onclick=exportStrength; els.exportJson.onclick=exportJson; els.importJson.onchange=importJson; els.reset.onclick=resetLocal; els.chartEx.onchange=drawExerciseChart; window.addEventListener( "online", scheduleSync ); window.addEventListener( "focus", () => syncNow( false ) ); document.addEventListener( "visibilitychange", () => { if( !document.hidden ) syncNow( false ) } ); setInterval( () => { if( state.sync.on&&!document.hidden ) syncNow( false ) }, 30000 ) }
+          function saveDates() { state.startDate=els.start.value; state.viewDate=els.view.value||today(); state.startUpdated=iso(); els.sDate.value=state.viewDate; save( true ); render() }
+          function moveWeek( delta ) { if( !state.startDate ) return; const serial=dateSerial( els.view.value||today() )+delta*7; els.view.value=serialToDate( serial ); saveDates() }
+          function render() { syncUi(); if( !state.startDate ) { empty(); history(); return } const c=calcContext( state.viewDate||today() ); ctx=c; els.phase.textContent=c.phase.name+" - "+c.phase.label; els.week.textContent="Week "+c.week; els.summary.textContent=c.phase.summary; els.focus.textContent=c.phase.focus; els.pills.innerHTML=[ "Walking "+c.target.walkMin+" min", c.target.walkSess+" walks", c.target.strength+" strength", c.target.cond+" conditioning", c.target.mob+" mobility days" ].map( x => '<span class="pill">'+esc( x )+'</span>' ).join( "" ); renderGoals(); renderWeekStrip(); renderSelectedDay(); renderWeekPlan(); renderDetails(); renderStrengthTables(); sessionOptions(); renderWeeklyTotals(); history(); chartOptions() }
+          function empty() { ctx=null; els.phase.textContent="No start date"; els.week.textContent="Set start date";[ "summary", "focus", "pills", "goals", "weekStrip", "todayIntro", "todayTasks", "weekPlan", "walking", "conditioning", "strengthTables", "sLog", "cumulative" ].forEach( k => els[ k ].innerHTML="" ) }
+          function calcContext( dateStr ) { const startS=dateSerial( state.startDate ), viewS=dateSerial( dateStr ), diff=Math.max( 0, viewS-startS ), week=Math.floor( diff/7 )+1, dayIndex=diff%7, phase=getPhase( week ), target=getTarget( phase, week ); return { startSerial: startS, viewSerial: viewS, viewDate: serialToDate( viewS ), week, dayIndex, programmeDay: DAY_NAMES[ dayIndex ], phase, target, weekStartSerial: startS+( week-1 )*7 } }
+          function renderGoals() { els.goals.innerHTML=ctx.phase.goals.map( ( g, i ) => '<span class="pill">'+esc( g )+'</span>' ).join( "" ) }
+          function renderWeekStrip() { const parts=[]; for( let i=0;i<7;i++ ) { const ds=serialToDate( ctx.weekStartSerial+i ), dc=calcContext( ds ), p=dayPlan( dc ), log=getDayLog( ds ), done=completion( ds, p ), todayCls=ds===ctx.viewDate? " today":""; parts.push( '<div class="mini-day'+todayCls+'"><b>'+DAY_SHORT[ i ]+'</b><small>'+formatDate( ds )+'</small><small>'+p.items.map( x => x.label ).join( ', ' )+'</small><span class="tiny muted">'+done.done+'/'+done.total+' tasks</span></div>' ) } els.weekStrip.innerHTML=parts.join( "" ) }
+          function renderSelectedDay() { const p=dayPlan( ctx ), log=getDayLog( ctx.viewDate ), done=completion( ctx.viewDate, p ); els.todayIntro.textContent=ctx.programmeDay+" - "+formatDate( ctx.viewDate )+" - week "+ctx.week; els.dayStatus.textContent=done.total? done.done+"/"+done.total+" tasks":"No tasks"; els.dayStatus.className="badge"+( done.total&&done.done===done.total? " ok":"" ); els.todayTasks.innerHTML=dayCardHtml( ctx.viewDate, true ); bindDayCard( els.todayTasks ) }
+          function renderWeekPlan() { els.dayJump.innerHTML=""; els.weekPlan.innerHTML=""; const cards=[]; const jumps=[]; for( let i=0;i<7;i++ ) { const ds=serialToDate( ctx.weekStartSerial+i ), name=DAY_NAMES[ i ]; jumps.push( '<a href="#day-'+ds+'">'+DAY_SHORT[ i ]+'</a>' ); cards.push( dayCardHtml( ds, false ) ) } els.dayJump.innerHTML=jumps.join( "" ); els.weekPlan.innerHTML=cards.join( "" ); bindDayCard( els.weekPlan ) }
+          function dayCardHtml( dateStr, compact ) {
+            const c=calcContext( dateStr ), p=dayPlan( c ), log=getDayLog( dateStr ), isSel=dateStr===ctx.viewDate, done=completion( dateStr, p ), strength=p.items.find( x => x.kind==="strength" ), cardClass=compact? "":" day-card"+( isSel? " selected":"" ), isSunday=c.dayIndex===6; const plan=p.items.map( item => planItemHtml( dateStr, item ) ).join( "" ); let strengthHtml=""; if( strength ) { const rows=( c.phase.strength[ strength.session ]||[] ).map( r => '<tr><td>'+esc( r.name )+'</td><td>'+sets( r )+'</td><td>'+range( r )+'</td><td>'+esc( r.rest )+'</td></tr>' ).join( "" ); strengthHtml='<details><summary>Session '+strength.session+' exercises</summary><div class="scroll"><table><thead><tr><th>Exercise</th><th>Sets</th><th>Reps/sec</th><th>Rest</th></tr></thead><tbody>'+rows+'</tbody></table></div></details><button class="small secondary" data-load-strength="'+dateStr+'" data-session="'+strength.session+'">Load strength logger</button>' }
+            const bodyMetricsHtml=isSunday? '<div><label>Weight kg</label><input type="text" inputmode="decimal" data-day="'+dateStr+'" data-field="weight" value="'+escA( show( log.weight ) )+'"></div><div><label>Waist cm</label><input type="text" inputmode="decimal" data-day="'+dateStr+'" data-field="waist" value="'+escA( show( log.waist ) )+'"></div>':'<div class="soft" style="grid-column:1/-1"><b>Weight and waist</b><br><span class="muted">Log these once weekly on Sunday. Daily weighing is not needed here, because apparently bathroom scales already receive enough attention.</span></div>'
+            const logHtml='<div class="daily-log"><h4>Daily log</h4><div class="form4"><div><label>Walking min</label><input type="text" inputmode="decimal" data-day="'+dateStr+'" data-field="walkingMin" value="'+escA( show( log.walkingMin ) )+'"></div><div><label>Mobility min</label><input type="text" inputmode="decimal" data-day="'+dateStr+'" data-field="mobilityMin" value="'+escA( show( log.mobilityMin ) )+'"></div><div><label>Conditioning min</label><input type="text" inputmode="decimal" data-day="'+dateStr+'" data-field="conditioningMin" value="'+escA( show( log.conditioningMin ) )+'"></div><div><label>Pain 0 to 10</label><input type="text" inputmode="decimal" data-day="'+dateStr+'" data-field="pain" value="'+escA( show( log.pain ) )+'"></div>'+bodyMetricsHtml+'<div><label>Notes</label><input type="text" data-day="'+dateStr+'" data-field="notes" value="'+escA( log.notes||"" )+'"></div><div><label>&nbsp;</label><button class="small ghost" data-view-day="'+dateStr+'">View day</button></div></div></div>'
+            return '<div id="day-'+dateStr+'" class="'+cardClass.trim()+'"><div class="day-head"><div><div class="day-title">'+esc( c.programmeDay )+' - '+esc( formatDate( dateStr ) )+'</div><p class="muted tiny">Week '+c.week+', '+esc( c.phase.name )+'. '+done.done+'/'+done.total+' tasks done.</p></div><span class="badge">'+esc( p.recovery )+'</span></div><div class="day-plan">'+plan+'</div>'+strengthHtml+logHtml+'</div>'
+          }
+          function planItemHtml( dateStr, item ) { const checked=taskDone( dateStr, item.id ), body='<strong>'+esc( item.label )+'</strong><span class="muted">'+esc( item.detail )+'</span>'; return '<label class="task"><input type="checkbox" data-task-day="'+dateStr+'" data-task-id="'+escA( item.id )+'" '+( checked? 'checked':'' )+'><div>'+body+'</div></label>' }
+          function bindDayCard( root ) { root.querySelectorAll( "input[data-task-day]" ).forEach( cb => cb.onchange=() => { const log=getDayLog( cb.dataset.taskDay ); log.tasks=log.tasks||{}; log.tasks[ cb.dataset.taskId ]={ checked: cb.checked, updated: iso() }; log.updated=iso(); state.dayLogs[ cb.dataset.taskDay ]=log; save( true ); renderWeeklyTotals(); renderWeekStrip() } ); root.querySelectorAll( "input[data-day]" ).forEach( inp => inp.addEventListener( "input", () => { const log=getDayLog( inp.dataset.day ); log[ inp.dataset.field ]=inp.value; log.updated=iso(); state.dayLogs[ inp.dataset.day ]=log; save( true ); renderWeeklyTotals() } ) ); root.querySelectorAll( "button[data-load-strength]" ).forEach( b => b.onclick=() => { saveDraftLocal(); els.sDate.value=b.dataset.loadStrength; els.view.value=b.dataset.loadStrength; state.viewDate=b.dataset.loadStrength; els.sName.value=b.dataset.session; save( false ); render(); location.hash="strengthLogger" } ); root.querySelectorAll( "button[data-view-day]" ).forEach( b => b.onclick=() => { els.view.value=b.dataset.viewDay; saveDates() } ) }
+          function dayPlan( c ) {
+            const phase=c.phase.id, day=c.dayIndex, week=c.week, odd=week%2===1; const items=[]; let recovery="Planned"; function add( kind, label, detail, extra ) { items.push( Object.assign( { id: kind+"-"+items.length, kind, label, detail }, extra||{} ) ) }
+            if( phase===1 ) { if( day===0 ) { add( "strength", "Strength A", "Full-body session A, RPE 5 to 6, then easy walk.", { session: "A" } ); add( "walk", "Easy walk", walkText( "short", week ) ) } if( day===1 ) { add( "walk", "Walking intervals", walkText( "interval", week ) ); add( "mobility", "Mobility flow", "10 min: "+mobilityFlow.join( "; " ) ) } if( day===2 ) { add( "strength", "Strength B", "Full-body session B, RPE 5 to 6, then easy walk.", { session: "B" } ); add( "walk", "Easy walk", walkText( "short", week ) ) } if( day===3 ) { add( "walk", "Walking intervals", walkText( "interval", week ) ); add( "mobility", "Mobility flow", "10 min: "+mobilityFlow.join( "; " ) ) } if( day===4 ) { const s=odd? "A":"B"; add( "strength", "Strength "+s, "Alternating Friday strength session. Keep RPE 5 to 6.", { session: s } ); add( "walk", "Easy walk", walkText( "short", week ) ) } if( day===5 ) { add( "walk", "Longer broken walk", walkText( "long", week ) ); add( "mobility", "Mobility if stiff", "Use calf, hip flexor and thoracic work for 5 to 10 min if stiff." ) } if( day===6 ) { recovery="Recovery emphasis"; add( "walk", "Recovery walk", walkText( "recovery", week ) ); add( "mobility", "Yoga or flow", "10 to 15 min easy flow." ) } }
+            if( phase===2 ) { if( day===0 ) { add( "strength", "Strength A", "Full-body session A, RPE 6 to 7.", { session: "A" } ); add( "walk", "Easy walk", "10 to 15 min easy walk after lifting or separately." ) } if( day===1 ) { add( "walk", "Capacity interval walk", walkText( "capacity", week ) ); add( "mobility", "Mobility", "10 min mobility flow." ) } if( day===2 ) { add( "strength", "Strength B", "Full-body session B, RPE 6 to 7.", { session: "B" } ); add( "walk", "Optional easy walk", "10 min easy walk if recovery is good." ) } if( day===3 ) { add( "walk", "Easy walk", walkText( "easy", week ) ); add( "mobility", "Mobility", "10 min mobility flow." ) } if( day===4 ) { const s=odd? "A":"B"; add( "strength", "Strength "+s, "Alternating Friday strength session.", { session: s } ); add( "conditioning", "Optional shadow boxing", "5 to 10 min technique only, or 6 x 60 sec with 90 sec rest if tolerated." ) } if( day===5 ) { add( "walk", "Longer broken walk", walkText( "long", week ) ); add( "mobility", "Calf and hip mobility", "5 to 10 min after walking." ) } if( day===6 ) { recovery="Recovery or rest"; add( "walk", "Recovery walk or rest", "20 to 30 min recovery walk if fresh, otherwise rest." ); add( "mobility", "Yoga or flow", "10 to 15 min easy flow." ) } }
+            if( phase===3 ) { if( day===0 ) { add( "strength", "Strength A", "Full-body session A. Keep 2 to 3 reps in reserve.", { session: "A" } ); add( "walk", "Easy walk", "10 to 15 min easy walk." ) } if( day===1 ) { add( "walk", "Brisk walking intervals", walkText( "brisk", week ) ); add( "mobility", "Mobility", "10 min mobility flow." ) } if( day===2 ) { add( "walk", "Zone 2 easy walk", walkText( "zone2", week ) ); add( "mobility", "Yoga or flow", "10 to 15 min easy flow." ) } if( day===3 ) { add( "strength", "Strength B", "Full-body session B. Keep 2 to 3 reps in reserve.", { session: "B" } ); add( "walk", "Easy walk", "10 to 15 min easy walk." ) } if( day===4 ) { add( "conditioning", "Boxing or low-impact conditioning", conditioningText( week ) ); add( "mobility", "Optional mobility", "5 to 10 min if stiff." ) } if( day===5 ) { add( "walk", "Long walk", walkText( "long", week ) ); add( "mobility", "Calf and hip mobility", "5 to 10 min after walking." ) } if( day===6 ) { recovery="Choose by recovery"; add( "strength", "Strength C if recovered", "Do strength C if fatigue and leg symptoms are controlled. Otherwise do recovery walk.", { session: "C" } ); add( "walk", "Recovery walk alternative", "20 to 40 min easy walk if not lifting." ) } }
+            if( phase===4 ) { if( day===0 ) { add( "strength", "Full-body strength A", "Progress gradually. Deload if fatigue accumulates.", { session: "A" } ) } if( day===1 ) { add( "walk", "Brisk walking intervals", "35 to 50 min total. Include brisk or incline blocks only if flat walking is stable." ) } if( day===2 ) { add( "walk", "Zone 2 walk", "40 to 60 min easy to moderate." ); add( "mobility", "Mobility", "10 min mobility flow." ) } if( day===3 ) { add( "strength", "Full-body strength B", "Progress gradually. Keep most sets below failure.", { session: "B" } ) } if( day===4 ) { add( "conditioning", "Boxing or aerobic conditioning", "20 to 35 min. Boxing, low-impact circuit or brisk intervals at RPE 6 to 7." ) } if( day===5 ) { add( "walk", "Long walk or hike", "60 to 90 min, broken if needed." ) } if( day===6 ) { recovery="Choose by recovery"; add( "strength", "Full-body strength C if recovered", "Do C if recovered; otherwise active recovery walk.", { session: "C" } ); add( "walk", "Active recovery alternative", "20 to 45 min easy walk." ) } }
+            return { items, recovery }
+          }
+          function walkText( type, week ) { const weekMap={ 1: { short: "8 to 12 min easy, twice daily if useful.", interval: "Walk until discomfort reaches 3 to 4/10, rest 1 to 3 min, repeat for 8 to 12 min.", long: "20 to 30 min total, broken as needed.", recovery: "8 to 15 min very easy." }, 2: { short: "10 to 15 min easy.", interval: "10 to 15 min intervals. Keep flat ground or treadmill.", long: "25 to 35 min broken walk.", recovery: "15 to 20 min easy or rest." }, 3: { short: "15 to 20 min easy.", interval: "15 to 20 min intervals as tolerated.", long: "30 to 45 min broken walk.", recovery: "15 to 25 min easy." }, 4: { short: "20 to 30 min total daily walking, broken if needed.", interval: "20 to 30 min total, broken by symptoms.", long: "35 to 45 min broken walk.", recovery: "20 to 30 min easy." } }; if( week<=4 ) return ( weekMap[ week ]&&weekMap[ week ][ type ] )||weekMap[ Math.min( week, 4 ) ].short; if( week===5 ) return { capacity: "5 min warm-up, 3 min brisk / 2 min easy x 4, cool-down.", easy: "25 to 30 min easy.", long: "35 to 45 min broken." }[ type ]||"25 to 30 min easy."; if( week===6 ) return { capacity: "4 min brisk / 2 min easy x 4 to 5.", easy: "30 to 35 min easy.", long: "40 to 50 min broken." }[ type ]||"30 to 35 min easy."; if( week===7 ) return { capacity: "5 min brisk / 2 min easy x 4 to 5.", easy: "35 to 40 min easy.", long: "45 to 55 min broken." }[ type ]||"35 to 40 min easy."; if( week===8 ) return { capacity: "5 min brisk / 90 sec easy x 5.", easy: "35 to 45 min easy.", long: "50 to 60 min broken." }[ type ]||"35 to 45 min easy."; if( week<=10 ) return { brisk: "35 to 40 min with brisk blocks if tolerated.", zone2: "30 to 45 min easy to moderate.", long: "45 to 60 min broken if needed." }[ type ]||"35 to 45 min."; if( week<=12 ) return { brisk: "30 min: 5 min warm-up, 4 min brisk / 2 min easy x 4, cool-down.", zone2: "35 to 45 min easy to moderate.", long: "50 to 65 min broken if needed." }[ type ]||"40 to 45 min."; if( week<=14 ) return { brisk: "45 to 50 min with 3 x 3 min small incline blocks if stable.", zone2: "40 to 50 min easy to moderate.", long: "55 to 70 min broken if needed." }[ type ]||"45 to 50 min."; if( week<=16 ) return { brisk: "50 to 55 min mixed pace.", zone2: "40 to 55 min easy to moderate.", long: "60 min, breaks allowed." }[ type ]||"50 to 60 min."; return "40 to 90 min depending on the session and recovery." }
+          function conditioningText( week ) { if( week<9 ) return "Technique only: 5 to 10 min. Small footwork, no bouncing."; if( week<=16 ) return "3 to 5 rounds: shadow boxing 60 sec, step-back march 45 sec, incline press-up 8 to 12, hinge 10, dead bug 6 each side, rest 90 sec."; return "20 to 35 min boxing, low-impact aerobics or circuit at RPE 6 to 7." }
+          function renderDetails() { els.walking.innerHTML='<div class="soft"><b>This week walking target</b><p>'+esc( ctx.target.text )+'</p><p class="muted">Use easy walks, intervals and longer broken walks according to the daily cards. Keep gait normal and reduce volume after next-day flare.</p></div>'; els.conditioning.innerHTML='<div class="soft"><b>Mobility flow</b><p>'+esc( mobilityFlow.join( '; ' ) )+'</p></div><div class="soft"><b>Conditioning rule</b><p>'+esc( conditioningText( ctx.week ) )+'</p></div>' }
+          function renderStrengthTables() { els.strengthIntro.textContent=ctx.phase.intro; els.strengthTables.innerHTML=Object.keys( ctx.phase.strength ).map( s => '<details '+( s===suggestSession()? "open":"" )+'><summary>Session '+s+'</summary><div class="scroll"><table><thead><tr><th>Exercise</th><th>Sets</th><th>Reps/sec</th><th>Rest</th><th>Notes</th></tr></thead><tbody>'+ctx.phase.strength[ s ].map( r => '<tr><td>'+esc( r.name )+'</td><td>'+sets( r )+'</td><td>'+range( r )+'</td><td>'+esc( r.rest )+'</td><td>'+esc( r.note )+'</td></tr>' ).join( "" )+'</tbody></table></div></details>' ).join( "" ) }
+          function sessionOptions() { const old=els.sName.value; els.sDate.value=els.sDate.value||ctx.viewDate; els.sName.innerHTML=Object.keys( ctx.phase.strength ).map( s => '<option value="'+s+'">Session '+s+'</option>' ).join( "" ); els.sName.value=ctx.phase.strength[ old ]? old:suggestSession(); renderLogger() }
+          function renderLogger() { if( !ctx ) return; const sn=els.sName.value||suggestSession(), draft=state.drafts[ draftKey() ]||{}; els.sRpe.value=draft.rpe||""; els.sNotes.value=draft.notes||""; els.sLog.innerHTML=( ctx.phase.strength[ sn ]||[] ).map( r => exerciseHtml( r, draft ) ).join( "" ); els.sLog.querySelectorAll( "input[data-name]" ).forEach( i => { i.addEventListener( "input", saveDraftLocal ) } ); els.sLog.querySelectorAll( "button[data-action='add-set']" ).forEach( b => b.onclick=() => addSet( b.dataset.ex ) ); els.sLog.querySelectorAll( "button[data-action='remove-set']" ).forEach( b => b.onclick=() => removeSet( b.dataset.ex ) ) }
+          function exerciseHtml( r, draft ) {
+            const sug=suggest( r ), draftSets=( draft.sets||[] ).filter( x => x.exercise===r.name ), desired=Math.max( sug.sets.length, draftSets.length||0 ), rows=[]; for( let i=0;i<desired;i++ ) { const d=draftSets.find( x => +x.set===i+1 )||{}, sv=sug.sets[ i ]||sug.sets[ sug.sets.length-1 ]||{ w: "", v: r.repsMin }; rows.push( '<div class="setgrid"><b>Set '+( i+1 )+'</b>'+field( r.name, i, "tw", "Target kg", sv.w, true )+field( r.name, i, "aw", "Actual kg", has( d, "aw" )? d.aw:sv.w, false )+field( r.name, i, "tv", "Target "+unit( r ), sv.v, true )+field( r.name, i, "av", "Actual "+unit( r ), has( d, "av" )? d.av:sv.v, false )+field( r.name, i, "rpe", "RPE", d.rpe||"", false )+'</div>' ) }
+            return '<div class="exercise" data-exercise="'+escA( r.name )+'"><div class="exercise-head"><div><h3>'+esc( r.name )+'</h3><p class="muted tiny">'+esc( r.type )+' - plan '+sets( r )+' x '+range( r )+'. Rest '+esc( r.rest )+'. Suggested: '+esc( sug.text )+'</p></div><div class="row"><button type="button" class="small secondary" data-action="add-set" data-ex="'+escA( r.name )+'">Add set</button><button type="button" class="small ghost" data-action="remove-set" data-ex="'+escA( r.name )+'">Remove last set</button></div></div>'+rows.join( "" )+'</div>'
+          }
+          function field( ex, set, name, label, val, ro ) { return '<div><label>'+esc( label )+'</label><input data-ex="'+escA( ex )+'" data-set="'+set+'" data-name="'+name+'" type="text" inputmode="decimal" autocomplete="off" '+( ro? 'readonly':'' )+' value="'+escA( show( val ) )+'"></div>' }
+          function saveDraftLocal() { if( !ctx ) return; state.drafts[ draftKey() ]=collectDraft(); state.updatedAt=iso(); localStorage.setItem( K, JSON.stringify( state ) ) }
+          function collectDraft() { const rows=[]; els.sLog.querySelectorAll( "input[data-name]" ).forEach( i => { const setNo=Number( i.dataset.set )+1; let row=rows.find( x => x.exercise===i.dataset.ex&&x.set===setNo ); if( !row ) { row={ exercise: i.dataset.ex, set: setNo }; rows.push( row ) } row[ i.dataset.name ]=i.value } ); return { date: els.sDate.value, session: els.sName.value, rpe: els.sRpe.value, notes: els.sNotes.value.trim(), sets: rows, updated: iso() } }
+          function addSet( exName ) { saveDraftLocal(); const key=draftKey(), d=state.drafts[ key ]||collectDraft(), exSets=( d.sets||[] ).filter( x => x.exercise===exName ), last=exSets.sort( ( a, b ) => a.set-b.set ).slice( -1 )[ 0 ]||{}, nextSet=( last.set||0 )+1; d.sets=d.sets||[]; d.sets.push( { exercise: exName, set: nextSet, tw: last.tw||"", aw: last.aw||last.tw||"", tv: last.tv||"", av: last.av||last.tv||"", rpe: "" } ); d.updated=iso(); state.drafts[ key ]=d; save( false ); renderLogger() }
+          function removeSet( exName ) { saveDraftLocal(); const key=draftKey(), d=state.drafts[ key ]||collectDraft(), exSets=( d.sets||[] ).filter( x => x.exercise===exName ); if( exSets.length<=1 ) return; const maxSet=Math.max( ...exSets.map( x => Number( x.set )||0 ) ); d.sets=( d.sets||[] ).filter( x => !( x.exercise===exName&&Number( x.set )===maxSet ) ); d.updated=iso(); state.drafts[ key ]=d; save( false ); renderLogger() }
+          function saveStrength() { if( !ctx ) return; saveDraftLocal(); const d=collectDraft(), sessionCtx=calcContext( d.date||ctx.viewDate ), setsOut=d.sets.map( s => { const p=findPlan( d.session, s.exercise, sessionCtx.phase )||{}; return { exercise: s.exercise, type: p.type||"", unit: p.unit||"reps", set: Number( s.set ), targetWeight: numOrBlank( s.tw ), actualWeight: numOrBlank( s.aw ), targetValue: numOrBlank( s.tv ), actualValue: numOrBlank( s.av ), rpe: numOrBlank( s.rpe ) } } ).filter( s => s.actualWeight!==""||s.actualValue!==""||s.rpe!=="" ); if( !setsOut.length ) { alertBox( els.sStatus, "No actual set data to save.", "bad" ); return } const existing=( state.strength||[] ).find( s => s.date===d.date&&s.session===d.session ), sess={ id: existing? existing.id:id(), date: d.date, week: sessionCtx.week, phase: sessionCtx.phase.name, session: d.session, rpe: numOrBlank( d.rpe ), notes: d.notes, sets: setsOut, saved: existing? existing.saved:iso(), updated: iso(), device: state.sync.device||guessDevice() }; state.strength=( state.strength||[] ).filter( s => s.id!==sess.id ); state.strength.push( sess ); delete state.drafts[ draftKey() ]; save( true ); alertBox( els.sStatus, "Strength session saved and synced when online.", "ok" ); render() }
+          function suggest( r ) { const last=lastFor( r.name ); if( !last ) return { text: sets( r )+" x "+range( r ), sets: Array.from( { length: r.setsMin }, () => ( { w: "", v: r.repsMin } ) ) }; const ss=( last.sets||[] ).filter( s => s.exercise===r.name ).sort( ( a, b ) => a.set-b.set ), vals=ss.map( s => num( s.actualValue ) ).filter( x => x>0 ), weights=ss.map( s => num( s.actualWeight ) ).filter( x => x>0 ), maxR=max( ss.map( s => num( s.rpe ) ) ), minV=vals.length? Math.min( ...vals ):r.repsMin, lastW=weights.length? max( weights ):"", top=vals.length>=r.setsMin&&minV>=r.repsMax; let w=lastW, v=minV, why="repeat"; if( maxR>=8.5 ) { v=Math.max( r.repsMin, minV ); why="effort high, repeat" } else if( top&&lastW!=="" ) { const inc=incLoad( r ); w=Math.round( ( lastW+inc )*2 )/2; v=r.repsMin; why="add "+inc+" kg" } else { v=Math.min( r.repsMax, Math.max( r.repsMin, minV+1 ) ); why="add a rep" } const count=Math.min( r.setsMax, Math.max( r.setsMin, ss.length||r.setsMin ) ); return { text: why, sets: Array.from( { length: count }, ( _, i ) => ( { w: w, v: v } ) ) } }
+          function renderWeeklyTotals() { if( !ctx ) return; const t=weekTotals( ctx.week ), latest=latestMetrics( ctx.week ); els.walkMin.value=show( t.walkMin ); els.walkSess.value=show( t.walkSess ); els.strengthSess.value=show( t.strengthSess ); els.condSess.value=show( t.condSess ); els.mobDays.value=show( t.mobDays ); els.pain.value=show( latest.pain ); els.weight.value=show( latest.weight ); els.waist.value=show( latest.waist ); bar( els.walkBar, t.walkMin, ctx.target.walkMin ); bar( els.walkSessBar, t.walkSess, ctx.target.walkSess ); bar( els.strengthBar, t.strengthSess, ctx.target.strength ); bar( els.condBar, t.condSess, Math.max( 1, ctx.target.cond ) ); bar( els.mobBar, t.mobDays, ctx.target.mob ); els.walkTarget.textContent="Target: "+ctx.target.walkMin+" min"; els.walkSessTarget.textContent="Target: "+ctx.target.walkSess; els.strengthTarget.textContent="Target: "+ctx.target.strength; els.condTarget.textContent="Target: "+ctx.target.cond; els.mobTarget.textContent="Target: "+ctx.target.mob; if( num( latest.pain )>=6 ) alertBox( els.weekStatus, "Latest pain is high. Reduce next session volume or intensity.", "bad" ); else els.weekStatus.classList.add( "hidden" ); renderCumulative(); drawWeeklyChart() }
+          function weekTotals( week ) { let walkMin=0, walkSess=0, condSess=0, mobDays=0; Object.values( state.dayLogs||{} ).forEach( l => { if( calcContext( l.date ).week!==week ) return; const wm=num( l.walkingMin ), cm=num( l.conditioningMin ), mm=num( l.mobilityMin ); walkMin+=wm; if( wm>0 ) walkSess++; if( cm>0||taskKindDone( l, "conditioning" ) ) condSess++; if( mm>0||taskKindDone( l, "mobility" ) ) mobDays++ } ); const strengthSess=new Set( ( state.strength||[] ).filter( s => Number( s.week )===Number( week ) ).map( s => s.date+"-"+s.session ) ).size; return { walkMin, walkSess, strengthSess, condSess, mobDays } }
+          function latestMetrics( week ) { const logs=Object.values( state.dayLogs||{} ).filter( l => calcContext( l.date ).week===week ).sort( ( a, b ) => String( b.date ).localeCompare( String( a.date ) ) ); const find=f => { const x=logs.find( l => l[ f ]!==""&&l[ f ]!=null ); return x? x[ f ]:"" }; const sunday=state.startDate? getDayLog( serialToDate( dateSerial( state.startDate )+( Number( week )-1 )*7+6 ) ):{}; return { pain: find( "pain" ), weight: show( sunday.weight ), waist: show( sunday.waist ) } }
+          function renderCumulative() { const weeks=[]; for( let w=1;w<=ctx.week;w++ )weeks.push( weekTotals( w ) ); const totalWalk=weeks.reduce( ( a, x ) => a+x.walkMin, 0 ), totalStrength=( state.strength||[] ).length, totalCond=weeks.reduce( ( a, x ) => a+x.condSess, 0 ), totalMob=weeks.reduce( ( a, x ) => a+x.mobDays, 0 ); els.cumulative.innerHTML='<div class="soft"><b>Total walking</b><br>'+Math.round( totalWalk )+' min</div><div class="soft"><b>Strength sessions saved</b><br>'+totalStrength+'</div><div class="soft"><b>Conditioning sessions</b><br>'+totalCond+'</div><div class="soft"><b>Mobility days</b><br>'+totalMob+'</div>' }
+          function drawWeeklyChart() { const rows=[]; for( let w=Math.max( 1, ctx.week-15 );w<=ctx.week;w++ ) { const t=weekTotals( w ), p=getTarget( getPhase( w ), w ); rows.push( { week: w, walk: t.walkMin, target: p.walkMin, strength: t.strengthSess } ) } drawLineBars( els.weeklyChart, rows ) }
+          function history() { const logs=Object.values( state.dayLogs||{} ).sort( ( a, b ) => String( b.date ).localeCompare( String( a.date ) ) ).slice( 0, 5 ), s=( state.strength||[] ).slice().sort( ( a, b ) => String( b.date ).localeCompare( String( a.date ) ) ).slice( 0, 6 ); let html=""; html+=logs.map( x => { const c=calcContext( x.date ), body=( c.dayIndex===6&&( x.weight||x.waist ) )? ', Sunday weight '+show( x.weight )+' kg, waist '+show( x.waist )+' cm':''; return '<div class="soft"><b>'+esc( formatDate( x.date ) )+'</b><br>Walk '+show( x.walkingMin )+' min, mobility '+show( x.mobilityMin )+' min, conditioning '+show( x.conditioningMin )+' min, pain '+show( x.pain )+body+'</div>' } ).join( "" ); html+=s.map( x => '<div class="soft"><b>'+esc( formatDate( x.date ) )+' - Strength '+esc( x.session )+'</b><br>Week '+x.week+', sets '+( x.sets||[] ).length+', RPE '+show( x.rpe )+' <button class="small ghost" data-del="'+escA( x.id )+'">Delete</button></div>' ).join( "" ); els.hist.innerHTML=html||'<p class="muted">No saved progress yet.</p>'; els.hist.querySelectorAll( "button[data-del]" ).forEach( b => b.onclick=() => { if( confirm( "Delete this strength session?" ) ) { state.strength=state.strength.filter( s => s.id!==b.dataset.del ); save( true ); render() } } ) }
+          function chartOptions() { const names=[ ...new Set( ( state.strength||[] ).flatMap( s => ( s.sets||[] ).map( x => x.exercise ) ) ) ].sort(), old=els.chartEx.value; els.chartEx.innerHTML=names.length? names.map( n => '<option>'+esc( n )+'</option>' ).join( "" ):'<option>No logged exercises</option>'; if( names.includes( old ) ) els.chartEx.value=old; drawExerciseChart() }
+          function drawExerciseChart() { const name=els.chartEx.value, rows=( state.strength||[] ).map( s => { const sets=( s.sets||[] ).filter( x => x.exercise===name ); if( !sets.length ) return null; return { date: s.date, session: s.session, bestW: max( sets.map( x => num( x.actualWeight ) ) ), bestV: max( sets.map( x => num( x.actualValue ) ) ), vol: sets.reduce( ( a, x ) => a+( num( x.actualWeight )||1 )*num( x.actualValue ), 0 ), rpe: max( sets.map( x => num( x.rpe ) ) ) } } ).filter( Boolean ).sort( ( a, b ) => String( a.date ).localeCompare( String( b.date ) ) ); drawExerciseLine( els.chart, rows ); els.exTable.innerHTML=rows.length? '<table><thead><tr><th>Date</th><th>Session</th><th>Best kg</th><th>Best reps/sec</th><th>Volume</th><th>Top RPE</th></tr></thead><tbody>'+rows.slice( -12 ).reverse().map( r => '<tr><td>'+formatDate( r.date )+'</td><td>'+r.session+'</td><td>'+show( r.bestW )+'</td><td>'+show( r.bestV )+'</td><td>'+Math.round( r.vol )+'</td><td>'+show( r.rpe )+'</td></tr>' ).join( "" )+'</tbody></table>':"" }
+          function drawExerciseLine( canvas, rows ) { const ctx2=canvas.getContext( "2d" ), w=canvas.width, h=canvas.height, p=34; ctx2.clearRect( 0, 0, w, h ); ctx2.font="13px Arial"; ctx2.fillStyle="#5b675c"; if( !rows.length ) { ctx2.fillText( "No exercise data yet.", 20, 30 ); return } const vals=rows.map( r => r.bestW||r.bestV||0 ), mx=Math.max( 1, ...vals ); axis( ctx2, w, h, p, "Best load kg, or reps/sec if bodyweight" ); ctx2.strokeStyle="#2f6f46"; ctx2.lineWidth=3; ctx2.beginPath(); vals.forEach( ( v, i ) => { const x=p+( w-p*2 )*( rows.length===1? 0:i/( rows.length-1 ) ), y=h-p-( h-p*2 )*( v/mx ); if( i ) ctx2.lineTo( x, y ); else ctx2.moveTo( x, y ) } ); ctx2.stroke(); ctx2.fillStyle="#2f6f46"; vals.forEach( ( v, i ) => { const x=p+( w-p*2 )*( rows.length===1? 0:i/( rows.length-1 ) ), y=h-p-( h-p*2 )*( v/mx ); ctx2.beginPath(); ctx2.arc( x, y, 4, 0, Math.PI*2 ); ctx2.fill() } ) }
+          function drawLineBars( canvas, rows ) { const ctx2=canvas.getContext( "2d" ), w=canvas.width, h=canvas.height, p=34; ctx2.clearRect( 0, 0, w, h ); ctx2.font="13px Arial"; ctx2.fillStyle="#5b675c"; if( !rows.length ) { ctx2.fillText( "No weekly data yet.", 20, 30 ); return } axis( ctx2, w, h, p, "Weekly walking minutes and strength sessions" ); const mx=Math.max( 1, ...rows.map( r => Math.max( r.walk, r.target ) ) ); rows.forEach( ( r, i ) => { const x=p+( w-p*2 )*( i/( Math.max( 1, rows.length-1 ) ) ), bw=Math.max( 5, ( w-p*2 )/Math.max( 6, rows.length )/2 ), bh=( h-p*2 )*( r.walk/mx ); ctx2.fillStyle="#2f6f46"; ctx2.fillRect( x-bw/2, h-p-bh, bw, bh ); ctx2.fillStyle="#5b675c"; if( i%2===0 ) ctx2.fillText( String( r.week ), x-5, h-8 ) } ); ctx2.strokeStyle="#8a5a00"; ctx2.lineWidth=2; ctx2.beginPath(); rows.forEach( ( r, i ) => { const x=p+( w-p*2 )*( i/( Math.max( 1, rows.length-1 ) ) ), y=h-p-( h-p*2 )*( r.target/mx ); if( i ) ctx2.lineTo( x, y ); else ctx2.moveTo( x, y ) } ); ctx2.stroke() }
+          function axis( ctx2, w, h, p, title ) { ctx2.strokeStyle="#dfe5df"; ctx2.lineWidth=1; ctx2.beginPath(); ctx2.moveTo( p, p ); ctx2.lineTo( p, h-p ); ctx2.lineTo( w-p, h-p ); ctx2.stroke(); ctx2.fillText( title, p, 18 ) }
+          async function connectSync() { try { const url=els.url.value.trim(), key=els.key.value.trim(), phrase=els.phrase.value; if( !url||!key||phrase.length<16 ) { syncMsg( "Enter Supabase URL, key and a private phrase of at least 16 characters.", "bad" ); return } const sid=await sha( "reconditioning-sync-id:"+phrase ), secret=await sha( "reconditioning-sync-secret:"+phrase ); state.sync={ on: true, url, key, id: sid, secret, device: els.dev.value.trim()||guessDevice(), pulled: state.sync.pulled||"", pushed: state.sync.pushed||"" }; save( false ); await syncNow( true ); syncUi() } catch( e ) { syncMsg( "Sync connection failed: "+err( e ), "bad" ) } }
+          async function syncNow( force ) {
+            if( !state.sync.on ) return; if( syncing ) { pendingSync=true; return } if( !navigator.onLine&&!force ) return; try {
+              syncing=true; syncUi( "syncing" ); saveDraftLocal(); const client=getClient(); const pull=await client.rpc( "reconditioning_pull", { p_sync_id: state.sync.id, p_secret: state.sync.secret } ); if( pull.error ) throw pull.error; const remote=( pull.data&&pull.data[ 0 ]&&pull.data[ 0 ].profile_exists )? pull.data[ 0 ].data:null; if( remote ) { const sync=state.sync; state=merge( state, remote ); state.sync=sync; norm() }
+              const payload=cloud(); const push=await client.rpc( "reconditioning_push", { p_sync_id: state.sync.id, p_secret: state.sync.secret, p_data: payload, p_client_updated_at: state.updatedAt||iso(), p_device_name: state.sync.device||guessDevice() } ); if( push.error ) throw push.error; if( push.data&&push.data[ 0 ]&&push.data[ 0 ].data ) { const sync=state.sync; state=merge( state, push.data[ 0 ].data ); state.sync=sync; state.sync.pulled=iso(); state.sync.pushed=iso(); norm() } save( false ); syncMsg( "Synced "+new Date().toLocaleTimeString( [], { hour: "2-digit", minute: "2-digit" } ), "ok" ); if( !isEditingStrength() ) render(); else renderQueued=true
+            } catch( e ) { syncMsg( "Using local data. Sync failed: "+err( e ), "bad" ) } finally { syncing=false; syncUi(); if( pendingSync ) { pendingSync=false; scheduleSync() } }
+          }
+          function scheduleSync() { if( !state.sync.on ) return; clearTimeout( syncTimer ); syncTimer=setTimeout( () => syncNow( false ), SYNC_DELAY ) }
+          function getClient() { if( !supabaseClient||supabaseClient.supabaseUrl!==state.sync.url ) { supabaseClient=window.supabase.createClient( state.sync.url, state.sync.key ); supabaseClient.supabaseUrl=state.sync.url } return supabaseClient }
+          function syncUi( mode ) { els.url.value=state.sync.url||els.url.value||""; els.key.value=state.sync.key||els.key.value||""; els.dev.value=state.sync.device||els.dev.value||guessDevice(); els.syncId.value=state.sync.id? state.sync.id.slice( 0, 12 )+"...":""; els.syncNow.disabled=!state.sync.on; els.disc.disabled=!state.sync.on; els.connect.textContent=state.sync.on? "Reconnect sync":"Connect and sync"; els.syncBadge.className="badge"; els.syncBadge.textContent=mode==="syncing"? "Syncing":state.sync.on? "Auto-sync on":"Local only" }
+          function disconnectSync() { if( !confirm( "Disconnect sync on this device? Local data remains." ) ) return; state.sync.on=false; state.sync.id=""; state.sync.secret=""; save( false ); syncUi(); syncMsg( "Sync disconnected on this device.", "bad" ) }
+          function cloud() { return { schema: 7, startDate: state.startDate, startUpdated: state.startUpdated, viewDate: state.viewDate, progress: state.progress, dayLogs: state.dayLogs, tasks: state.tasks, strength: state.strength, updatedAt: state.updatedAt||iso() } }
+          function merge( a, b ) { const out=def(); out.startDate=cmp( a.startUpdated, b.startUpdated )>=0? a.startDate:b.startDate; out.startUpdated=cmp( a.startUpdated, b.startUpdated )>=0? a.startUpdated:b.startUpdated; out.viewDate=a.viewDate||b.viewDate||today(); out.progress=mergeObj( a.progress, b.progress ); out.dayLogs=mergeObj( a.dayLogs, b.dayLogs ); out.tasks=mergeTasks( a.tasks, b.tasks ); out.strength=mergeArr( a.strength, b.strength ); out.drafts=a.drafts||{}; out.updatedAt=cmp( a.updatedAt, b.updatedAt )>=0? a.updatedAt:b.updatedAt; return out }
+          function mergeObj( a, b ) { const o=Object.assign( {}, a||{} ); Object.keys( b||{} ).forEach( k => { if( !o[ k ]||cmp( b[ k ].updated, o[ k ].updated )>0 ) o[ k ]=b[ k ] } ); return o }
+          function mergeTasks( a, b ) { const o=JSON.parse( JSON.stringify( a||{} ) ); Object.keys( b||{} ).forEach( w => { o[ w ]=o[ w ]||{}; Object.keys( b[ w ]||{} ).forEach( t => { if( !o[ w ][ t ]||cmp( b[ w ][ t ].updated, o[ w ][ t ].updated )>0 ) o[ w ][ t ]=b[ w ][ t ] } ) } ); return o }
+          function mergeArr( a, b ) { const m={}; ( a||[] ).concat( b||[] ).forEach( x => { if( x&&x.id&&( !m[ x.id ]||cmp( x.updated, m[ x.id ].updated )>0 ) ) m[ x.id ]=x } ); return Object.values( m ).sort( ( x, y ) => String( x.date ).localeCompare( String( y.date ) ) ) }
+          function exportDaily() { const h=[ "date", "week", "phase", "programme_day", "walking_minutes", "mobility_minutes", "conditioning_minutes", "pain", "sunday_weight_kg", "sunday_waist_cm", "tasks_done", "tasks_total", "notes", "updated" ], rows=Object.values( state.dayLogs||{} ).sort( ( a, b ) => String( a.date ).localeCompare( String( b.date ) ) ).map( l => { const c=calcContext( l.date ), p=dayPlan( c ), done=completion( l.date, p ), isSun=c.dayIndex===6; return [ l.date, c.week, c.phase.name, c.programmeDay, l.walkingMin, l.mobilityMin, l.conditioningMin, l.pain, isSun? l.weight:"", isSun? l.waist:"", done.done, done.total, l.notes, l.updated ].map( csv ).join( "," ) } ); download( "daily-progress.csv", h.join( "," )+"\n"+rows.join( "\n" ), "text/csv" ) }
+          function exportStrength() { const h=[ "session_id", "date", "week", "phase", "session", "exercise", "type", "set", "target_weight", "actual_weight", "target_reps_or_seconds", "actual_reps_or_seconds", "unit", "rpe", "session_rpe", "notes", "updated" ], rows=[]; ( state.strength||[] ).forEach( s => ( s.sets||[] ).forEach( x => rows.push( [ s.id, s.date, s.week, s.phase, s.session, x.exercise, x.type, x.set, x.targetWeight, x.actualWeight, x.targetValue, x.actualValue, x.unit, x.rpe, s.rpe, s.notes, s.updated ].map( csv ).join( "," ) ) ) ); download( "strength-sessions.csv", h.join( "," )+"\n"+rows.join( "\n" ), "text/csv" ) }
+          function exportJson() { download( "reconditioning-backup.json", JSON.stringify( cloud(), null, 2 ), "application/json" ) }
+          function importJson( e ) { const f=e.target.files&&e.target.files[ 0 ]; if( !f ) return; const rd=new FileReader(); rd.onload=() => { try { const sync=state.sync; state=merge( state, JSON.parse( rd.result ) ); state.sync=sync; norm(); save( true ); render(); syncMsg( "JSON imported and merged.", "ok" ) } catch( x ) { syncMsg( "Import failed: "+err( x ), "bad" ) } e.target.value="" }; rd.readAsText( f ) }
+          function resetLocal() { if( confirm( "Reset local data on this device? Cloud data is not deleted." ) ) { const sync=state.sync; state=def(); state.sync=sync; state.viewDate=today(); save( true ); render() } }
+          function getDayLog( dateStr ) { state.dayLogs=state.dayLogs||{}; return Object.assign( { date: dateStr, walkingMin: "", mobilityMin: "", conditioningMin: "", pain: "", weight: "", waist: "", notes: "", tasks: {}, updated: "" }, state.dayLogs[ dateStr ]||{} ) }
+          function taskDone( dateStr, id ) { const l=getDayLog( dateStr ); return !!( l.tasks&&l.tasks[ id ]&&l.tasks[ id ].checked ) }
+          function completion( dateStr, p ) { const total=p.items.length, done=p.items.filter( x => taskDone( dateStr, x.id ) ).length; return { done, total } }
+          function taskKindDone( log, kind ) { const c=calcContext( log.date ), p=dayPlan( c ); return p.items.some( x => x.kind===kind&&log.tasks&&log.tasks[ x.id ]&&log.tasks[ x.id ].checked ) }
+          function suggestSession() { if( !ctx ) return "A"; const p=dayPlan( ctx ), s=p.items.find( x => x.kind==="strength"&&ctx.phase.strength[ x.session ] ); return s? s.session:Object.keys( ctx.phase.strength )[ 0 ] }
+          function findPlan( s, e, phase ) { return ( ( phase||ctx.phase ).strength[ s ]||[] ).find( r => r.name===e ) }
+          function lastFor( n ) { return ( state.strength||[] ).filter( s => ( s.sets||[] ).some( x => x.exercise===n ) ).sort( ( a, b ) => String( b.date ).localeCompare( String( a.date ) ) )[ 0 ] }
+          function incLoad( r ) { return [ "Squat", "Hinge", "Hip thrust", "Calf" ].includes( r.type )? 5:2.5 }
+          function getPhase( w ) { return phases.find( p => w>=p.weeks[ 0 ]&&w<=p.weeks[ 1 ] )||phases[ phases.length-1 ] }
+          function getTarget( p, w ) { const a=p.targets[ w ]||p.defaultTarget; return { walkMin: a[ 0 ], walkSess: a[ 1 ], strength: a[ 2 ], cond: a[ 3 ], mob: a[ 4 ], text: a[ 5 ] } }
+          function def() { return { schema: 7, startDate: "", startUpdated: "", viewDate: "", progress: {}, dayLogs: {}, tasks: {}, strength: [], drafts: {}, sync: { on: false, url: "", key: "", id: "", secret: "", device: "", pulled: "", pushed: "" }, updatedAt: "" } }
+          function load() { let data=null; try { data=JSON.parse( localStorage.getItem( K )||"null" ) } catch( e ) { } if( !data ) { for( const k of OLD_KEYS ) { try { data=JSON.parse( localStorage.getItem( k )||"null" ); if( data ) break } catch( e ) { } } } return Object.assign( def(), data||{} ) }
+          function norm() { state.progress=state.progress||{}; state.dayLogs=state.dayLogs||{}; state.tasks=state.tasks||{}; state.strength=Array.isArray( state.strength )? state.strength:[]; state.drafts=state.drafts||{}; state.sync=Object.assign( def().sync, state.sync||{} ); state.viewDate=state.viewDate||today(); state.updatedAt=state.updatedAt||iso(); migrateWeeklyProgress(); migrateBodyMetricsToSunday() }
+          function migrateWeeklyProgress() { if( !state.startDate||Object.keys( state.dayLogs||{} ).length ) return; Object.values( state.progress||{} ).forEach( p => { if( !p||!p.week ) return; const date=serialToDate( dateSerial( state.startDate )+( Number( p.week )-1 )*7+6 ); state.dayLogs[ date ]={ date: date, walkingMin: show( p.walkMin ), mobilityMin: p.mobDays? String( Number( p.mobDays )*10 ):"", conditioningMin: p.condSess? String( Number( p.condSess )*20 ):"", pain: show( p.pain ), weight: show( p.weight ), waist: show( p.waist ), notes: p.notes||"Migrated from previous weekly tracker.", tasks: {}, updated: p.updated||iso() } } ) }
+          function migrateBodyMetricsToSunday() { if( !state.startDate ) return; Object.keys( state.dayLogs||{} ).forEach( ds => { const log=state.dayLogs[ ds ]; if( !log ) return; const hasWeight=log.weight!==""&&log.weight!=null, hasWaist=log.waist!==""&&log.waist!=null; if( !hasWeight&&!hasWaist ) return; const c=calcContext( ds ); if( c.dayIndex===6 ) return; const sundayDate=serialToDate( dateSerial( state.startDate )+( c.week-1 )*7+6 ), sun=getDayLog( sundayDate ); let moved=false; if( hasWeight&&( sun.weight===""||sun.weight==null||cmp( log.updated, sun.updated )>0 ) ) { sun.weight=log.weight; moved=true } if( hasWaist&&( sun.waist===""||sun.waist==null||cmp( log.updated, sun.updated )>0 ) ) { sun.waist=log.waist; moved=true } if( moved ) { sun.updated=iso(); state.dayLogs[ sundayDate ]=sun } log.weight=""; log.waist=""; log.updated=log.updated||iso(); state.dayLogs[ ds ]=log } ) }
+          function save( doSync ) { state.updatedAt=iso(); localStorage.setItem( K, JSON.stringify( state ) ); if( doSync ) scheduleSync() }
+          function isEditingStrength() { const a=document.activeElement; return !!( a&&( els.sLog.contains( a )||a===els.sRpe||a===els.sNotes ) ) }
+          function has( o, k ) { return Object.prototype.hasOwnProperty.call( o, k ) }
+          function sha( t ) { return crypto.subtle.digest( "SHA-256", new TextEncoder().encode( t ) ).then( b => Array.from( new Uint8Array( b ) ).map( x => x.toString( 16 ).padStart( 2, "0" ) ).join( "" ) ) }
+          function cmp( a, b ) { const x=Date.parse( a||"" )||0, y=Date.parse( b||"" )||0; return x===y? 0:x>y? 1:-1 }
+          function alertBox( el, m, k ) { el.textContent=m; el.classList.remove( "hidden", "bad", "ok" ); if( k==="bad" ) el.classList.add( "bad" ); if( k==="ok" ) el.classList.add( "ok" ) }
+          function syncMsg( m, k ) { alertBox( els.syncStatus, m, k ) }
+          function err( e ) { return e&&( e.message||e.details||e.hint )||String( e ) }
+          function today() { const d=new Date(); return d.getFullYear()+"-"+String( d.getMonth()+1 ).padStart( 2, "0" )+"-"+String( d.getDate() ).padStart( 2, "0" ) }
+          function dateSerial( v ) { const p=String( v||today() ).split( "-" ).map( Number ); return Math.floor( Date.UTC( p[ 0 ], p[ 1 ]-1, p[ 2 ] )/86400000 ) }
+          function serialToDate( s ) { const d=new Date( s*86400000 ); return d.getUTCFullYear()+"-"+String( d.getUTCMonth()+1 ).padStart( 2, "0" )+"-"+String( d.getUTCDate() ).padStart( 2, "0" ) }
+          function formatDate( s ) { const p=String( s ).split( "-" ); return p.length===3? p[ 2 ]+"/"+p[ 1 ]+"/"+p[ 0 ]:s }
+          function iso() { return new Date().toISOString() }
+          function id() { return "s-"+Date.now().toString( 36 )+"-"+Math.random().toString( 36 ).slice( 2, 9 ) }
+          function num( v ) { const n=Number( String( v ).trim() ); return Number.isFinite( n )? n:0 }
+          function numOrBlank( v ) { if( v===""||v==null ) return ""; const n=Number( String( v ).trim() ); return Number.isFinite( n )? n:"" }
+          function bar( el, val, t ) { el.style.width=( t? Math.max( 0, Math.min( 100, Math.round( num( val )/t*100 ) ) ):0 )+"%" }
+          function max( a ) { const b=a.filter( x => Number.isFinite( x )&&x>0 ); return b.length? Math.max( ...b ):0 }
+          function unit( r ) { return r.unit==="seconds"? "sec":"reps" }
+          function range( r ) { return r.repsMin===r.repsMax? r.repsMin+" "+unit( r ):r.repsMin+" to "+r.repsMax+" "+unit( r ) }
+          function sets( r ) { return r.setsMin===r.setsMax? String( r.setsMin ):r.setsMin+" to "+r.setsMax }
+          function draftKey() { return ( els.sDate.value||state.viewDate )+"-"+( els.sName.value||"A" ) }
+          function show( v ) { return v===""||v==null? "":String( v ) }
+          function csv( v ) { return '"'+show( v ).replace( /"/g, '""' )+'"' }
+          function esc( s ) { return String( s==null? "":s ).replace( /&/g, "&amp;" ).replace( /</g, "&lt;" ).replace( />/g, "&gt;" ).replace( /"/g, "&quot;" ).replace( /'/g, "&#039;" ) }
+          function escA( s ) { return esc( s ) }
+          function download( fn, text, type ) { const b=new Blob( [ text ], { type } ), u=URL.createObjectURL( b ), a=document.createElement( "a" ); a.href=u; a.download=fn; document.body.appendChild( a ); a.click(); a.remove(); URL.revokeObjectURL( u ) }
+          function guessDevice() { return /Mobi|Android|iPhone|iPad/i.test( navigator.userAgent )? "Mobile":"Laptop" }
+        } )()
+      } );
+    </script>
+  </body>
+
 </html>
