@@ -1,10 +1,7 @@
 -- Reconditioning programme tracker: Supabase setup
 -- Run this once in Supabase SQL Editor.
--- This creates a locked table plus RPC functions used by the static website.
+-- It creates a locked table plus RPC functions used by the static website.
 -- Do not put the service role key in the website.
---
--- Fix included: Supabase commonly installs extensions in the "extensions" schema.
--- The RPC functions therefore call extensions.digest(...) explicitly.
 
 create schema if not exists extensions;
 create extension if not exists pgcrypto with schema extensions;
@@ -20,8 +17,6 @@ create table if not exists public.reconditioning_tracker_profiles (
 );
 
 alter table public.reconditioning_tracker_profiles enable row level security;
--- RLS is enabled, but not forced, so the SECURITY DEFINER RPC functions can operate.
--- Direct anon/authenticated table access is revoked below.
 
 revoke all on table public.reconditioning_tracker_profiles from anon;
 revoke all on table public.reconditioning_tracker_profiles from authenticated;
@@ -36,10 +31,7 @@ language sql
 stable
 set search_path = public, extensions, pg_temp
 as $$
-  select encode(
-    extensions.digest((coalesce(p_secret, '') || ':' || coalesce(p_sync_id, ''))::text, 'sha256'::text),
-    'hex'
-  )
+  select encode(digest(coalesce(p_secret, '') || ':' || coalesce(p_sync_id, ''), 'sha256'), 'hex')
 $$;
 
 revoke all on function public.reconditioning_hash_secret(text, text) from public;
@@ -164,5 +156,8 @@ revoke all on function public.reconditioning_push(text, text, jsonb, timestamptz
 grant execute on function public.reconditioning_pull(text, text) to anon, authenticated;
 grant execute on function public.reconditioning_push(text, text, jsonb, timestamptz, text) to anon, authenticated;
 
--- Smoke test: this should return a 64-character SHA-256 hex string.
-select public.reconditioning_hash_secret('01234567890123456789012345678901', '01234567890123456789012345678901') as setup_test_hash;
+-- Smoke test. A successful result is a 64-character hash string.
+select public.reconditioning_hash_secret(
+  '01234567890123456789012345678901',
+  '01234567890123456789012345678901'
+) as setup_test_hash;
