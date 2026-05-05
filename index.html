@@ -587,6 +587,103 @@
           display: block
         }
       }
+
+      /* Layout stability patch */
+
+      /* Prevent grid children from forcing their parents wider than the available space */
+      .main-grid,
+      .grid,
+      .card,
+      .side,
+      .weekly-strip,
+      .week-days,
+      .day-card,
+      .mini-day,
+      .metric,
+      .soft {
+        min-width: 0;
+      }
+
+      /* Make the main two-column layout less aggressive */
+      .main-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+        gap: 18px;
+        overflow: visible;
+      }
+
+      /* Weekly day cards should wrap instead of squeezing/overflowing */
+      .weekly-strip {
+        grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+        align-items: stretch;
+      }
+
+      /* Stop text inside day cards from spilling sideways */
+      .mini-day,
+      .day-card,
+      .plan-item,
+      .task,
+      .metric {
+        overflow-wrap: anywhere;
+        word-break: normal;
+      }
+
+      /* Keep mini day cards tidy */
+      .mini-day {
+        min-height: 120px;
+        overflow: hidden;
+      }
+
+      /* Prevent long text inside selected-day tasks from pushing into the sidebar */
+      .task {
+        grid-template-columns: 28px minmax(0, 1fr);
+      }
+
+      .task>div,
+      .plan-item span,
+      .mini-day small {
+        min-width: 0;
+      }
+
+      /* Weekly total boxes should not visually spill */
+      .metric input[readonly] {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* On medium screens, stack the sidebar above the main content */
+      @media (max-width: 1180px) {
+        .main-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .side {
+          position: static;
+          order: -1;
+        }
+      }
+
+      /* On smaller screens, use two columns for the week strip */
+      @media (max-width: 760px) {
+        .weekly-strip {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      /* On narrow phones, use one column */
+      @media (max-width: 480px) {
+        main {
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+
+        .weekly-strip {
+          grid-template-columns: 1fr;
+        }
+
+        .card {
+          padding: 14px;
+        }
+      }
     </style>
   </head>
 
