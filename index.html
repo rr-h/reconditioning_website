@@ -665,33 +665,7 @@
               <div id="strengthStatus" class="alert hidden"></div>
             </div>
           </div>
-          <section class="card sync" style="margin-top:18px">
-            <div class="row" style="justify-content:space-between">
-              <div>
-                <h2>Supabase sync</h2>
-                <p class="muted">Use the same URL, publishable or anon key and private phrase on both devices. Data
-                  saves locally
-                  first, then syncs automatically.</p>
-              </div><span id="syncBadge" class="badge">Local only</span>
-            </div>
-            <div class="form3" style="margin-top:12px">
-              <div><label>Supabase URL</label><input id="supabaseUrl" placeholder="https://your-project.supabase.co">
-              </div>
-              <div><label>Publishable or anon key</label><input id="supabaseKey" type="password"
-                  placeholder="sb_publishable_... or eyJ..."></div>
-              <div><label>Device name</label><input id="deviceName" placeholder="Laptop or phone"></div>
-            </div>
-            <div class="form" style="margin-top:12px">
-              <div><label>Private sync phrase</label><input id="syncPhrase" type="password"
-                  placeholder="Minimum 16 characters">
-              </div>
-              <div><label>Derived sync ID</label><input id="syncId" readonly placeholder="Created on connect"></div>
-            </div>
-            <div class="row" style="margin-top:12px"><button id="connectSync">Connect and sync</button><button
-                class="secondary" id="syncNow">Sync now</button><button class="ghost"
-                id="disconnectSync">Disconnect</button></div>
-            <div id="syncStatus" class="alert hidden"></div>
-          </section>
+
 
           <aside class="stack side">
             <div class="card">
@@ -739,6 +713,33 @@
                 id="resetLocal">Reset local data</button>
             </div>
           </aside>
+          <section class="card sync" style="margin-top:18px">
+            <div class="row" style="justify-content:space-between">
+              <div>
+                <h2>Supabase sync</h2>
+                <p class="muted">Use the same URL, publishable or anon key and private phrase on both devices. Data
+                  saves locally
+                  first, then syncs automatically.</p>
+              </div><span id="syncBadge" class="badge">Local only</span>
+            </div>
+            <div class="form3" style="margin-top:12px">
+              <div><label>Supabase URL</label><input id="supabaseUrl" placeholder="https://your-project.supabase.co">
+              </div>
+              <div><label>Publishable or anon key</label><input id="supabaseKey" type="password"
+                  placeholder="sb_publishable_... or eyJ..."></div>
+              <div><label>Device name</label><input id="deviceName" placeholder="Laptop or phone"></div>
+            </div>
+            <div class="form" style="margin-top:12px">
+              <div><label>Private sync phrase</label><input id="syncPhrase" type="password"
+                  placeholder="Minimum 16 characters">
+              </div>
+              <div><label>Derived sync ID</label><input id="syncId" readonly placeholder="Created on connect"></div>
+            </div>
+            <div class="row" style="margin-top:12px"><button id="connectSync">Connect and sync</button><button
+                class="secondary" id="syncNow">Sync now</button><button class="ghost"
+                id="disconnectSync">Disconnect</button></div>
+            <div id="syncStatus" class="alert hidden"></div>
+          </section>
         </section>
         <div class="footer">Calisthenics substitutions are bodyweight-based. If a pulling movement cannot be anchored
           safely, use the listed floor-based alternative and consider a safe suspension trainer or resistance band
