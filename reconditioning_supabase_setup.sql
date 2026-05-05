@@ -1,4 +1,4 @@
--- Reconditioning programme tracker: Supabase setup
+-- Reconditioning calisthenics tracker: Supabase setup
 -- Run this once in Supabase SQL Editor.
 -- It creates a locked table plus RPC functions used by the static website.
 -- Do not put the service role key in the website.
@@ -31,7 +31,7 @@ language sql
 stable
 set search_path = public, extensions, pg_temp
 as $$
-  select encode(digest(coalesce(p_secret, '') || ':' || coalesce(p_sync_id, ''), 'sha256'), 'hex')
+  select encode(extensions.digest(coalesce(p_secret, '') || ':' || coalesce(p_sync_id, ''), 'sha256'), 'hex')
 $$;
 
 revoke all on function public.reconditioning_hash_secret(text, text) from public;
@@ -156,7 +156,6 @@ revoke all on function public.reconditioning_push(text, text, jsonb, timestamptz
 grant execute on function public.reconditioning_pull(text, text) to anon, authenticated;
 grant execute on function public.reconditioning_push(text, text, jsonb, timestamptz, text) to anon, authenticated;
 
--- Smoke test. A successful result is a 64-character hash string.
 select public.reconditioning_hash_secret(
   '01234567890123456789012345678901',
   '01234567890123456789012345678901'
